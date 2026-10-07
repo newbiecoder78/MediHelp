@@ -33,6 +33,11 @@ else:
     else:
         pytesseract.pytesseract.tesseract_cmd = _TESSERACT_EXE
 
+# Local tessdata directory containing traineddata models (e.g. eng, osd)
+_TESSDATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "tessdata"))
+if os.path.exists(_TESSDATA_DIR):
+    os.environ["TESSDATA_PREFIX"] = _TESSDATA_DIR
+
 # Load reference drug vocabulary (brands + generics)
 _DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "brand_to_generic.json")
 
@@ -83,6 +88,9 @@ def extract_text(image_input: io.BytesIO | bytes | Image.Image | str) -> str:
     Extract raw text from a prescription image using Tesseract OCR.
     """
     try:
+        if os.path.exists(_TESSDATA_DIR):
+            os.environ["TESSDATA_PREFIX"] = _TESSDATA_DIR
+
         if isinstance(image_input, (bytes, bytearray)):
             image = Image.open(io.BytesIO(image_input))
         elif isinstance(image_input, io.BytesIO):
@@ -93,7 +101,6 @@ def extract_text(image_input: io.BytesIO | bytes | Image.Image | str) -> str:
             image = image_input
 
         processed = preprocess_image(image)
-        # PSM 6 assumes a single uniform block of text; PSM 4 assumes variable sizes
         text = pytesseract.image_to_string(processed, config="--psm 6")
         if not text.strip():
             text = pytesseract.image_to_string(processed, config="--psm 4")
@@ -153,12 +160,18 @@ def clean_ocr_text(raw_text: str) -> list[str]:
 
         # Split words or short multi-word phrases
         if len(cleaned_line) >= 3:
-            # Check if line contains multiple candidate words or combo
             tokens = [t.strip() for t in cleaned_line.split() if len(t.strip()) >= 3]
             for token in tokens:
-                # Discard pure numbers or single-character noise
-                if token.isalpha() or "-" in token or "+" in token:
-                    candidates.append(token)
+                # Strip leading joined prefixes like Tab/Cap/Inj/Syp/Rx
+                token = re.sub(r"^(tab|cap|inj|syp|rx)", "", token, flags=re.IGNORECASE)
+                # Strip trailing joined dosage numbers/units like 500mg/75mg
+                token = re.sub(r"\d+(mg|ml|mcg|gm|g|iu)?$", "", token, flags=re.IGNORECASE)
+                token = token.strip("-+ ")
+
+                # Discard noise words & prescription headers
+                if len(token) >= 3 and token.lower() not in {"prescription", "preseription", "doctor", "patient", "clinic", "hospital"}:
+                    if token.isalpha() or "-" in token or "+" in token:
+                        candidates.append(token)
 
     # Deduplicate while preserving order
     seen = set()
