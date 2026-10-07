@@ -13,10 +13,11 @@ import json
 import os
 import requests
 from datetime import datetime, timezone
+from app.config import Config
 
 # ── Config ────────────────────────────────────────────────────────────────────
-_RXNAV_BASE = os.environ.get("RXNAV_BASE_URL", "https://rxnav.nlm.nih.gov/REST")
-_TIMEOUT = int(os.environ.get("RXNAV_TIMEOUT_SECONDS", "5"))
+_RXNAV_BASE = getattr(Config, "RXNAV_BASE_URL", os.environ.get("RXNAV_BASE_URL", "https://rxnav.nlm.nih.gov/REST"))
+_TIMEOUT = getattr(Config, "RXNAV_TIMEOUT_SECONDS", int(os.environ.get("RXNAV_TIMEOUT_SECONDS", "5")))
 _CACHE_MAX_AGE_HOURS = 24  # re-fetch from API after this many hours
 
 # ── Fallback data path ────────────────────────────────────────────────────────
@@ -33,11 +34,10 @@ def _load_fallback() -> list[dict]:
         return []
 
 
-# ── Supabase helpers ──────────────────────────────────────────────────────────
+# ── Database helper (Graceful offline/local mode) ─────────────────────────────
 def _get_db():
-    """Return Supabase client or None."""
-    from app.config import supabase_client
-    return supabase_client
+    """Return database client if available, else None."""
+    return getattr(Config, "supabase_client", None)
 
 
 def _cache_is_fresh(cached_at_str: str) -> bool:

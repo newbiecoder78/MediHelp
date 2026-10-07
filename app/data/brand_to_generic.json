@@ -38,14 +38,16 @@
   "pantocid":        "pantoprazole",
   "omez":            "omeprazole",
 
-  "shelcal":         "calcium carbonate+vitamin d3",
+  "shelcal":         "calcium carbonate",
   "gemcal":          "calcium carbonate+vitamin d3",
 
+  "atorva":          "atorvastatin",
   "atorlip":         "atorvastatin",
   "lipitor":         "atorvastatin",
   "storvas":         "atorvastatin",
   "crestor":         "rosuvastatin",
 
+  "amlip":           "amlodipine",
   "amlodac":         "amlodipine",
   "stamlo":          "amlodipine",
   "norvasc":         "amlodipine",

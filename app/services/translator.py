@@ -26,9 +26,14 @@ _TRANSLATIONS = _load_translations()
 
 
 def get_ui_strings(lang: str = "en") -> dict[str, str]:
-    """Return UI label dictionary for the given language code."""
+    """Return UI label dictionary for the given language code with English fallback."""
     ui = _TRANSLATIONS.get("ui", {})
-    return ui.get(lang, ui.get("en", {}))
+    en_ui = ui.get("en", {})
+    lang_ui = ui.get(lang, en_ui)
+    # Merge on top of English so missing keys fall back to English
+    merged = dict(en_ui)
+    merged.update(lang_ui)
+    return merged
 
 
 def _make_drug_pair_key(drug_a: str, drug_b: str) -> str:
@@ -53,36 +58,55 @@ def get_drug_interaction_description(
     lang: str = "en"
 ) -> str:
     """
-    Get localized description for a drug-drug interaction.
-    1. Check specific curated pair translation
-    2. Fallback to generic template for that severity in that language
-    3. Fallback to original description
+    Get localized description for a drug-drug interaction with fallback chain:
+    1. Specific curated pair in requested language
+    2. Generic template in requested language
+    3. Specific curated pair in English ('en')
+    4. Generic template in English ('en')
+    5. Original description
     """
+    pair_key = _make_drug_pair_key(drug_a, drug_b)
+    direct_key = f"{drug_a.strip().lower()}_{drug_b.strip().lower()}"
+    specific = _TRANSLATIONS.get("specific_pairs", {}).get(pair_key) or _TRANSLATIONS.get("specific_pairs", {}).get(direct_key)
+
     if lang == "en":
+        if specific and "en" in specific:
+            return specific["en"]
         return original_description
 
-    pair_key = _make_drug_pair_key(drug_a, drug_b)
-    specific = _TRANSLATIONS.get("specific_pairs", {}).get(pair_key)
-
-    if specific and lang in specific:
+    # 1. Target language specific pair
+    if specific and lang in specific and specific[lang]:
         return specific[lang]
 
-    # Also check direct order without sort
-    direct_key = f"{drug_a.strip().lower()}_{drug_b.strip().lower()}"
-    specific_direct = _TRANSLATIONS.get("specific_pairs", {}).get(direct_key)
-    if specific_direct and lang in specific_direct:
-        return specific_direct[lang]
-
-    # Fallback to structured generic template
+    # 2. Target language generic template
     sev_templates = _TRANSLATIONS.get("generic_templates", {}).get(severity.lower(), {})
-    if lang in sev_templates:
-        return sev_templates[lang].format(
-            drug_a=drug_a.title(),
-            drug_b=drug_b.title(),
-            severity=severity.upper()
-        )
+    if lang in sev_templates and sev_templates[lang]:
+        try:
+            return sev_templates[lang].format(
+                drug_a=drug_a.title(),
+                drug_b=drug_b.title(),
+                severity=severity.upper()
+            )
+        except Exception:
+            pass
 
-    return original_description
+    # 3. English specific pair fallback
+    if specific and "en" in specific and specific["en"]:
+        return specific["en"]
+
+    # 4. English generic template fallback
+    if "en" in sev_templates and sev_templates["en"]:
+        try:
+            return sev_templates["en"].format(
+                drug_a=drug_a.title(),
+                drug_b=drug_b.title(),
+                severity=severity.upper()
+            )
+        except Exception:
+            pass
+
+    # 5. Original description
+    return original_description or f"Interaction between {drug_a.title()} and {drug_b.title()} ({severity.upper()} risk)."
 
 
 def get_food_interaction_description(
@@ -92,26 +116,54 @@ def get_food_interaction_description(
     original_description: str,
     lang: str = "en"
 ) -> str:
-    """Get localized description for a drug-food interaction."""
-    if lang == "en":
-        return original_description
-
+    """
+    Get localized description for a drug-food interaction with fallback chain:
+    1. Specific curated pair in requested language
+    2. Generic food template in requested language
+    3. Specific curated pair in English ('en')
+    4. Generic food template in English ('en')
+    5. Original description
+    """
     food_key = _make_food_pair_key(drug, food)
     specific = _TRANSLATIONS.get("specific_pairs", {}).get(food_key)
 
-    if specific and lang in specific:
+    if lang == "en":
+        if specific and "en" in specific:
+            return specific["en"]
+        return original_description
+
+    # 1. Target language specific pair
+    if specific and lang in specific and specific[lang]:
         return specific[lang]
 
-    # Fallback template
+    # 2. Target language generic template
     food_template_key = f"food_{severity.lower()}"
     sev_templates = _TRANSLATIONS.get("generic_templates", {}).get(food_template_key, {})
-    if lang in sev_templates:
-        return sev_templates[lang].format(
-            drug=drug.title(),
-            food=food.title()
-        )
+    if lang in sev_templates and sev_templates[lang]:
+        try:
+            return sev_templates[lang].format(
+                drug=drug.title(),
+                food=food.title()
+            )
+        except Exception:
+            pass
 
-    return original_description
+    # 3. English specific pair fallback
+    if specific and "en" in specific and specific["en"]:
+        return specific["en"]
+
+    # 4. English generic template fallback
+    if "en" in sev_templates and sev_templates["en"]:
+        try:
+            return sev_templates["en"].format(
+                drug=drug.title(),
+                food=food.title()
+            )
+        except Exception:
+            pass
+
+    # 5. Original description
+    return original_description or f"Dietary precaution with {drug.title()} and {food.title()}."
 
 
 def translate_results(result: dict[str, Any], lang: str = "en") -> dict[str, Any]:

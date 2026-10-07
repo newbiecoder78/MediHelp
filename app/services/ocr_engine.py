@@ -17,6 +17,7 @@ import shutil
 from PIL import Image, ImageEnhance, ImageFilter
 import pytesseract
 from rapidfuzz import process, fuzz
+from app.config import Config
 
 # Configure Tesseract binary path
 if os.environ.get("TESSERACT_CMD"):
@@ -188,7 +189,7 @@ def clean_ocr_text(raw_text: str) -> list[str]:
 
 def fuzzy_match_drugs(
     candidates: list[str],
-    threshold: int = 80
+    threshold: int | None = None
 ) -> list[dict]:
     """
     Fuzzy match candidate tokens against the known drug vocabulary.
@@ -203,6 +204,9 @@ def fuzzy_match_drugs(
       "is_valid": bool
     }
     """
+    if threshold is None:
+        threshold = getattr(Config, "OCR_FUZZY_THRESHOLD", 80)
+
     results = []
 
     for cand in candidates:

@@ -1,0 +1,12 @@
+services:
+  - type: web
+    name: medihelp
+    env: python
+    buildCommand: pip install -r requirements.txt
+    startCommand: gunicorn "app:create_app()" --bind 0.0.0.0:$PORT
+    healthCheckPath: /ping
+    envVars:
+      - key: FLASK_SECRET_KEY
+        sync: false
+      - key: RXNAV_TIMEOUT_SECONDS
+        value: "3"

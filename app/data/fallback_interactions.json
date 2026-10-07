@@ -187,5 +187,23 @@
     "severity": "medium",
     "description": "statin may raise INR in patients on warfarin; monitor INR when starting or changing the dose.",
     "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "17767",
+    "drug_a_name": "amlodipine",
+    "drug_b_rxcui": "36567",
+    "drug_b_name": "simvastatin",
+    "severity": "medium",
+    "description": "Amlodipine increases blood concentrations of simvastatin; limit simvastatin dose to 20 mg daily to avoid muscle toxicity.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "17767",
+    "drug_a_name": "amlodipine",
+    "drug_b_rxcui": "29046",
+    "drug_b_name": "lisinopril",
+    "severity": "low",
+    "description": "Dual antihypertensive mechanism: combines calcium channel blockade with ACE inhibition. Monitor blood pressure for hypotension.",
+    "source": "curated"
   }
 ]

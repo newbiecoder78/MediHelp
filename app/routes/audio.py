@@ -7,6 +7,7 @@ in English, Hindi (hi), Tamil (ta), and Telugu (te).
 """
 import hashlib
 import io
+import json
 import os
 from flask import Blueprint, request, send_file, jsonify, current_app
 from gtts import gTTS
@@ -15,6 +16,8 @@ audio_bp = Blueprint("audio", __name__)
 
 _AUDIO_DIR = os.path.join(os.path.dirname(__file__), "..", "static", "audio")
 os.makedirs(_AUDIO_DIR, exist_ok=True)
+
+_DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "alert_translations.json")
 
 # Valid gTTS language mappings
 _SUPPORTED_LANGS = {
@@ -30,6 +33,50 @@ def _get_hash_filename(text: str, lang: str) -> str:
     clean_text = text.strip().lower()
     h = hashlib.md5(f"{clean_text}_{lang}".encode("utf-8")).hexdigest()[:16]
     return f"tts_{lang}_{h}.mp3"
+
+
+@audio_bp.route("/patient/audio/<alert_key>/<lang>", methods=["GET"])
+def get_patient_alert_audio(alert_key: str, lang: str):
+    """
+    Serve pre-cached or dynamically synthesized MP3 audio for a specific alert key.
+    URL Path: /patient/audio/<alert_key>/<lang>
+    """
+    clean_key = alert_key.strip().lower()
+    clean_lang = lang.strip().lower()
+    gtts_lang = _SUPPORTED_LANGS.get(clean_lang, "en")
+
+    # 1. Look for pre-cached alert file
+    key_filename = f"alert_{clean_key}_{clean_lang}.mp3"
+    key_filepath = os.path.join(_AUDIO_DIR, key_filename)
+    if os.path.exists(key_filepath):
+        return send_file(key_filepath, mimetype="audio/mpeg", as_attachment=False)
+
+    # 2. Look up translation text from alert_translations.json if available
+    text_to_speak = ""
+    try:
+        if os.path.exists(_DATA_PATH):
+            with open(_DATA_PATH, encoding="utf-8") as f:
+                translations = json.load(f)
+            specific_pairs = translations.get("specific_pairs", {})
+            if clean_key in specific_pairs:
+                text_to_speak = specific_pairs[clean_key].get(clean_lang) or specific_pairs[clean_key].get("en", "")
+    except Exception:
+        pass
+
+    if not text_to_speak:
+        # Check query string text fallback
+        text_to_speak = request.args.get("text", "").strip()
+
+    if not text_to_speak:
+        return jsonify({"error": f"No audio or translation available for alert key '{clean_key}'."}), 404
+
+    # 3. Dynamic gTTS synthesis
+    try:
+        tts = gTTS(text=text_to_speak, lang=gtts_lang, slow=False)
+        tts.save(key_filepath)
+        return send_file(key_filepath, mimetype="audio/mpeg", as_attachment=False)
+    except Exception as exc:
+        return jsonify({"error": f"Audio synthesis failed: {str(exc)}"}), 500
 
 
 @audio_bp.route("/audio/tts", methods=["GET"])
@@ -70,7 +117,6 @@ def get_tts_audio():
         return send_file(hash_filepath, mimetype="audio/mpeg", as_attachment=False)
     except Exception as exc:
         print(f"[audio_route] Live gTTS generation failed: {exc}")
-        # In case of network error, return 500
         return jsonify({"error": f"Audio synthesis unavailable: {str(exc)}"}), 500
 
 

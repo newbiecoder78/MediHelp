@@ -39,17 +39,21 @@
       --border-strong: #cbd5e1;
 
       /* Risk Severities */
-      --high-color: #ef4444;
+      --severity-high: #DC2626;
+      --severity-medium: #EA580C;
+      --severity-low: #CA8A04;
+
+      --high-color: var(--severity-high);
       --high-bg: #fef2f2;
       --high-border: #fecaca;
       --high-text: #991b1b;
 
-      --med-color: #f59e0b;
+      --med-color: var(--severity-medium);
       --med-bg: #fffbeb;
       --med-border: #fde68a;
       --med-text: #92400e;
 
-      --low-color: #eab308;
+      --low-color: var(--severity-low);
       --low-bg: #fefce8;
       --low-border: #fef08a;
       --low-text: #854d0e;
@@ -84,8 +88,8 @@
 
     body {
       font-family: var(--font-body);
-      font-size: 15px;
-      line-height: 1.55;
+      font-size: 18px;
+      line-height: 1.6;
       background-color: var(--canvas-bg);
       color: var(--text-primary);
       min-height: 100vh;
@@ -879,6 +883,40 @@
         justify-content: center;
       }
     }
+
+    /* ── Global CSS Loading Spinner Overlay (No external library) ── */
+    .loading-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(15, 23, 42, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 99999;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      text-align: center;
+      padding: 1.5rem;
+    }
+    .spinner-disc {
+      width: 52px;
+      height: 52px;
+      border: 4px solid rgba(255, 255, 255, 0.25);
+      border-top-color: #ffffff;
+      border-radius: 50%;
+      animation: spin-overlay 0.75s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;
+      margin-bottom: 1.25rem;
+    }
+    @keyframes spin-overlay {
+      to { transform: rotate(360deg); }
+    }
+    body.is-submitting .loading-overlay {
+      display: flex;
+    }
   </style>
 </head>
 <body>
@@ -949,6 +987,28 @@
   </footer>
 
 </div>
+
+<!-- ── Global CSS Spinner Overlay Element (Hidden until submit) ── -->
+<div class="loading-overlay" id="loadingOverlay">
+  <div class="spinner-disc"></div>
+  <div style="font-family: var(--font-heading); font-weight: 800; font-size: 1.15rem; letter-spacing: 0.3px;">
+    Evaluating Prescription Safety...
+  </div>
+  <div style="font-size: 0.88rem; opacity: 0.85; margin-top: 0.35rem;">
+    Querying RxNorm ontological &amp; dietary matrices
+  </div>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var forms = document.querySelectorAll('form');
+    forms.forEach(function(f) {
+      f.addEventListener('submit', function() {
+        document.body.classList.add('is-submitting');
+      });
+    });
+  });
+</script>
 
 </body>
 </html>
