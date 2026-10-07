@@ -12,7 +12,7 @@ health_bp = Blueprint("health", __name__)
 
 @health_bp.route("/ping")
 def ping():
-    return jsonify({"status": "ok"}), 200
+    return "pong", 200
 
 
 @health_bp.route("/health")
