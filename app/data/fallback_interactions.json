@@ -115,5 +115,77 @@
     "severity": "medium",
     "description": "Metformin may enhance the anticoagulant effect of warfarin. Monitor INR levels closely.",
     "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "11289",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "301542",
+    "drug_b_name": "rosuvastatin",
+    "severity": "medium",
+    "description": "statin may raise INR in patients on warfarin; monitor INR when starting or changing the dose.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "202433",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "301542",
+    "drug_b_name": "rosuvastatin",
+    "severity": "medium",
+    "description": "statin may raise INR in patients on warfarin; monitor INR when starting or changing the dose.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "11289",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "36567",
+    "drug_b_name": "simvastatin",
+    "severity": "medium",
+    "description": "statin may raise INR in patients on warfarin; monitor INR when starting or changing the dose.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "202433",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "36567",
+    "drug_b_name": "simvastatin",
+    "severity": "medium",
+    "description": "statin may raise INR in patients on warfarin; monitor INR when starting or changing the dose.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "11289",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "6472",
+    "drug_b_name": "lovastatin",
+    "severity": "medium",
+    "description": "statin may raise INR in patients on warfarin; monitor INR when starting or changing the dose.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "202433",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "6472",
+    "drug_b_name": "lovastatin",
+    "severity": "medium",
+    "description": "statin may raise INR in patients on warfarin; monitor INR when starting or changing the dose.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "11289",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "41127",
+    "drug_b_name": "fluvastatin",
+    "severity": "medium",
+    "description": "statin may raise INR in patients on warfarin; monitor INR when starting or changing the dose.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "202433",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "41127",
+    "drug_b_name": "fluvastatin",
+    "severity": "medium",
+    "description": "statin may raise INR in patients on warfarin; monitor INR when starting or changing the dose.",
+    "source": "curated"
   }
 ]

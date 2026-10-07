@@ -1,12 +1,12 @@
 # ─────────────────────────────────────────────────────────────────────────────
 # MediHelp — Drug Interaction Checker
 # Dockerfile
-# Installs system deps (Tesseract) + Python deps, runs via Gunicorn.
+# Installs system deps (Tesseract OCR) + Python deps, runs via Gunicorn.
 # ─────────────────────────────────────────────────────────────────────────────
 
 FROM python:3.11-slim
 
-# System dependencies: Tesseract OCR (Phase 2) + OpenGL stub (Pillow)
+# System dependencies: Tesseract OCR + C libraries for image processing
 RUN apt-get update && apt-get install -y --no-install-recommends \
     tesseract-ocr \
     tesseract-ocr-eng \
@@ -20,10 +20,15 @@ WORKDIR /app
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy application source
-COPY . .
+# Copy application source (includes app/data/tessdata and app/static/audio)
+COPY wsgi.py .
+COPY app/ ./app/
+
+# Environment defaults
+ENV PORT=5000
+ENV PYTHONUNBUFFERED=1
 
 EXPOSE 5000
 
-# gunicorn timeout=120 to handle slow first RxNav calls
-CMD ["gunicorn", "--bind", "0.0.0.0:5000", "--timeout", "120", "--workers", "2", "wsgi:app"]
+# Run gunicorn bound to 0.0.0.0:$PORT
+CMD ["sh", "-c", "gunicorn --bind 0.0.0.0:${PORT:-5000} --timeout 120 --workers 2 wsgi:app"]

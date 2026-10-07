@@ -13,25 +13,26 @@ import io
 import json
 import os
 import re
+import shutil
 from PIL import Image, ImageEnhance, ImageFilter
 import pytesseract
 from rapidfuzz import process, fuzz
 
-# Explicitly point pytesseract to Tesseract OCR executable on Windows
-_TESSERACT_EXE = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-if os.path.exists(_TESSERACT_EXE):
-    pytesseract.pytesseract.tesseract_cmd = _TESSERACT_EXE
-else:
-    _TESSERACT_SEARCH_PATHS = [
+# Configure Tesseract binary path
+if os.environ.get("TESSERACT_CMD"):
+    pytesseract.pytesseract.tesseract_cmd = os.environ.get("TESSERACT_CMD")
+elif shutil.which("tesseract"):
+    pytesseract.pytesseract.tesseract_cmd = shutil.which("tesseract")
+elif os.name == "nt":
+    _common_win_paths = [
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe",
         r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
-        r"C:\Users\Hp\AppData\Local\Programs\Tesseract-OCR\tesseract.exe",
+        os.path.expandvars(r"%LOCALAPPDATA%\Programs\Tesseract-OCR\tesseract.exe"),
     ]
-    for p in _TESSERACT_SEARCH_PATHS:
+    for p in _common_win_paths:
         if os.path.exists(p):
             pytesseract.pytesseract.tesseract_cmd = p
             break
-    else:
-        pytesseract.pytesseract.tesseract_cmd = _TESSERACT_EXE
 
 # Local tessdata directory containing traineddata models (e.g. eng, osd)
 _TESSDATA_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "data", "tessdata"))

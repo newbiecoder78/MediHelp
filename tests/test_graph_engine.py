@@ -119,3 +119,21 @@ class TestGetSeveritySummary:
     def test_empty_interactions(self):
         summary = get_severity_summary([])
         assert summary["total"] == 0
+
+
+class TestClinicalAlternatives:
+
+    def test_aspirin_different_class_prefix(self):
+        from app.services.graph_engine import get_clinical_alternatives
+        alt = get_clinical_alternatives("aspirin", ["aspirin", "warfarin"])
+        assert alt["has_alternative"] is True
+        assert alt["alternative_name"].startswith("Paracetamol")
+        assert "Different class: confirm indication." in alt["rationale"]
+
+    def test_statin_same_class_no_prefix(self):
+        from app.services.graph_engine import get_clinical_alternatives
+        alt = get_clinical_alternatives("atorvastatin", ["atorvastatin"])
+        assert alt["has_alternative"] is True
+        assert alt["alternative_name"] == "Rosuvastatin"
+        assert not alt["rationale"].startswith("Different class: confirm indication.")
+

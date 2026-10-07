@@ -13,6 +13,7 @@ Edge schema:
 """
 import json
 import os
+import re
 import networkx as nx
 from typing import Optional
 
@@ -103,7 +104,7 @@ def add_food_interactions(G: nx.Graph, food_interactions: list[dict] | None = No
 def build_graph(
     interactions: list[dict],
     drug_meta: dict[str, dict] | None = None,
-    include_food: bool = True,
+    include_food: bool = False,
     food_interactions: list[dict] | None = None,
 ) -> nx.Graph:
     """
@@ -269,6 +270,9 @@ DRUG_CLASSES = {
     "dabigatran": "Direct Thrombin Inhibitor",
     "atorvastatin": "HMG-CoA Reductase Inhibitor (CYP3A4 Statin)",
     "rosuvastatin": "HMG-CoA Reductase Inhibitor (Hydrophilic Statin)",
+    "simvastatin": "HMG-CoA Reductase Inhibitor (Lipophilic Statin)",
+    "lovastatin": "HMG-CoA Reductase Inhibitor (Lipophilic Statin)",
+    "fluvastatin": "HMG-CoA Reductase Inhibitor (Statin)",
     "pravastatin": "HMG-CoA Reductase Inhibitor (Hydrophilic Statin)",
     "metformin": "Biguanide Antihyperglycemic",
     "glimepiride": "Sulfonylurea",
@@ -299,6 +303,78 @@ def get_drug_class(drug_name: str) -> str:
     return DRUG_CLASSES.get(clean, "Therapeutic Agent")
 
 
+def _normalize_class_category(class_name: str) -> str:
+    """Normalize drug class strings into broad clinical categories for comparison."""
+    c = class_name.lower().strip()
+    if "statin" in c or "hmg-coa" in c:
+        return "statin"
+    if "proton pump" in c or "ppi" in c:
+        return "ppi"
+    if "nsaid" in c:
+        return "nsaid"
+    if "ace inhibitor" in c:
+        return "ace_inhibitor"
+    if "arb" in c or "angiotensin" in c:
+        return "arb"
+    if "calcium channel" in c or "ccb" in c:
+        return "ccb"
+    if "fluoroquinolone" in c:
+        return "fluoroquinolone"
+    if "penicillin" in c or "beta-lactam" in c or "aminopenicillin" in c:
+        return "penicillin"
+    if "macrolide" in c:
+        return "macrolide"
+    if "tetracycline" in c:
+        return "tetracycline"
+    if "analgesic" in c or "antipyretic" in c:
+        return "analgesic"
+    if "vitamin k" in c or "vka" in c:
+        return "vka"
+    if "doac" in c or "direct factor" in c or "thrombin" in c:
+        return "doac"
+    return c
+
+
+_FALLBACK_DATA_PATH = os.path.join(
+    os.path.dirname(__file__), "..", "data", "fallback_interactions.json"
+)
+
+
+def _evaluate_candidate_against_regimen(cand_name: str, other_drugs: list[str]) -> tuple[bool, str]:
+    """
+    Check if candidate drug conflicts or interacts with any drug in the active regimen.
+    Returns (is_rejected, reason).
+    """
+    clean_cand = re.sub(r"\(.*?\)", "", cand_name).lower()
+    cand_tokens = [p.strip() for p in re.split(r"[/+]", clean_cand) if p.strip()]
+
+    # 1. Check if candidate is already in active regimen
+    for token in cand_tokens:
+        for other in other_drugs:
+            if token in other or other in token:
+                return True, f"{cand_name} is already part of the active regimen"
+
+    # 2. Check against known interaction edges in fallback dataset
+    try:
+        if os.path.exists(_FALLBACK_DATA_PATH):
+            with open(_FALLBACK_DATA_PATH, encoding="utf-8") as f:
+                fallback = json.load(f)
+            for item in fallback:
+                da = item.get("drug_a_name", "").lower()
+                db = item.get("drug_b_name", "").lower()
+                sev = item.get("severity", "low").lower()
+                if sev in ["high", "medium"]:
+                    for token in cand_tokens:
+                        for other in other_drugs:
+                            if (token in da and other in db) or (token in db and other in da):
+                                desc = item.get("description", "known clinical interaction")
+                                return True, f"{cand_name} interacts with {other.title()} ({sev} severity: {desc})"
+    except Exception as exc:
+        print(f"[graph_engine] Error evaluating candidate against regimen: {exc}")
+
+    return False, ""
+
+
 def get_clinical_alternatives(
     flagged_drug: str,
     active_regimen: list[str],
@@ -308,7 +384,8 @@ def get_clinical_alternatives(
     Suggest safer clinical alternatives for a flagged drug in the patient's regimen.
     
     Evaluates therapeutic substitutes within the same or safer therapeutic category,
-    verifying they have lower or zero interactions with other active medicines.
+    verifying they have lower or zero interactions with other active medicines in the FULL regimen.
+    Rejects any candidate that has an edge to ANY drug in the patient's current regimen.
     
     Returns structured dict:
       {
@@ -318,6 +395,7 @@ def get_clinical_alternatives(
         "alternative_name": str,
         "alternative_class": str,
         "rationale": str,
+        "rejection_reasons": list[str],
         "display_text": str
       }
     """
@@ -417,27 +495,52 @@ def get_clinical_alternatives(
 
     candidates = substitutions.get(drug_clean, [])
     
-    if candidates:
-        cand = candidates[0]
+    # Filter candidates across FULL active regimen: reject any candidate with an edge to ANY drug in current regimen
+    chosen_cand = None
+    rejection_reasons = []
+
+    for cand in candidates:
+        is_rejected, reject_reason = _evaluate_candidate_against_regimen(cand["name"], other_drugs)
+        if is_rejected:
+            rejection_reasons.append(reject_reason)
+        else:
+            chosen_cand = cand
+            break
+
+    if chosen_cand:
+        orig_cat = _normalize_class_category(drug_class)
+        alt_cat = _normalize_class_category(chosen_cand["class"])
+        is_diff_class = (orig_cat != alt_cat)
+
+        rationale = chosen_cand["rationale"]
+        if is_diff_class and not rationale.startswith("Different class: confirm indication."):
+            rationale = f"Different class: confirm indication. {rationale}"
+
         return {
             "drug": drug_clean.title(),
             "drug_class": drug_class,
             "has_alternative": True,
-            "alternative_name": cand["name"],
-            "alternative_class": cand["class"],
-            "rationale": cand["rationale"],
-            "display_text": f"💡 Consider {cand['name']}: {cand['rationale']}",
+            "alternative_name": chosen_cand["name"],
+            "alternative_class": chosen_cand["class"],
+            "rationale": rationale,
+            "rejection_reasons": rejection_reasons,
+            "display_text": f"💡 Consider {chosen_cand['name']}: {rationale}",
         }
 
-    # Fallback when no confident rule is found
+    # If every candidate is rejected, return the standard fallback
+    rejection_summary = "; ".join(rejection_reasons)
+    fallback_text = "No clear alternative identified — clinical review recommended"
+    display_fallback = f"{fallback_text} ({rejection_summary})" if rejection_summary else fallback_text
+
     return {
         "drug": drug_clean.title(),
         "drug_class": drug_class,
         "has_alternative": False,
         "alternative_name": "",
         "alternative_class": "",
-        "rationale": "",
-        "display_text": "No clear alternative identified — clinical review recommended",
+        "rationale": rejection_summary,
+        "rejection_reasons": rejection_reasons,
+        "display_text": display_fallback,
     }
 
 

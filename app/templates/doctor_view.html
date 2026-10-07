@@ -230,6 +230,11 @@
         ✅ No severe or moderate drug-drug interactions detected among the evaluated medicines.
       </div>
     {% endif %}
+
+    <!-- Alternatives dataset scope notice -->
+    <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 1rem; border-top: 1px dashed var(--border-light); padding-top: 0.75rem;">
+      ℹ️ {{ result.ui.alternatives_dataset_notice if result and result.ui and result.ui.alternatives_dataset_notice else "Alternatives are checked only against interactions in this tool's dataset. No flag does not mean no interaction." }}
+    </div>
   </div>
 
   <!-- ── 5. Flagged Drug-Food Interactions ────────────────────────────── -->
