@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% block title %}MediHelp — Check Drug & Food Interactions{% endblock %}
+{% block title %}{{ (ui and ui.page_title) or 'MediHelp — Check Drug & Food Interactions' }}{% endblock %}
 
 {% block content %}
 
@@ -25,9 +25,9 @@
 
 <!-- ── TAB 1: MANUAL TEXT INPUT ──────────────────────────────────────── -->
 <div id="tab-text" class="card" style="border-top: 4px solid var(--primary);">
-  <h2>💊 Enter Your Medicines</h2>
+  <h2>💊 {{ (ui and ui.identified_medicines) or 'Enter Your Medicines' }}</h2>
   <p style="margin-bottom: 1.25rem; color: var(--text-secondary); font-size: 1rem;">
-    Enter your prescribed medications. Indian brand names (e.g., <strong>Crocin</strong>, <strong>Ecosprin</strong>, <strong>Combiflam</strong>) and generic names (e.g., <em>Warfarin</em>, <em>Metformin</em>, <em>Atorvastatin</em>) are automatically mapped to drug-drug and food-drug interaction databases.
+    {{ (ui and ui.subtitle) or 'Enter your prescribed medications. Indian brand names and generic names are automatically mapped to clinical drug-drug and food-drug interaction databases.' }}
   </p>
 
   {% if error %}
@@ -81,7 +81,7 @@
 
     <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
       <button type="submit" class="btn btn-primary" style="font-size: 1.05rem; padding: 0.85rem 2rem;">
-        🔍 Check Drug & Food Interactions
+        🔍 {{ (ui and ui.page_title) or 'Check Drug & Food Interactions' }}
       </button>
       <button type="button" class="btn btn-secondary" onclick="document.getElementById('drugs').value = '';" style="font-size: 0.9rem;">
         Clear

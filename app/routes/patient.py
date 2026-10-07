@@ -8,6 +8,7 @@ Patient-facing routes:
 """
 from flask import Blueprint, render_template, request, redirect, url_for
 from app.services.interaction_checker import check_drugs
+from app.services.translator import get_ui_strings
 
 patient_bp = Blueprint("patient", __name__)
 
@@ -20,7 +21,8 @@ def index():
 @patient_bp.route("/patient")
 def input_form():
     lang = request.args.get("lang", "en")
-    return render_template("patient_input.html", lang=lang)
+    ui = get_ui_strings(lang)
+    return render_template("patient_input.html", lang=lang, ui=ui)
 
 
 @patient_bp.route("/patient/check", methods=["GET", "POST"])
@@ -37,6 +39,7 @@ def check():
             "patient_input.html",
             error="Please enter at least one medicine name.",
             lang=lang,
+            ui=get_ui_strings(lang),
         )
 
     result = check_drugs(raw_input, lang=lang)
