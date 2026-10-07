@@ -302,7 +302,7 @@ def get_interactions(rxcui_list: list[str]) -> list[dict]:
 
 
 # ─────────────────────────────────────────────────────────────────────────────
-# Drug properties (for doctor view — Phase 3)
+# Drug properties (for clinician decision support)
 # ─────────────────────────────────────────────────────────────────────────────
 
 def get_drug_properties(rxcui: str) -> dict:

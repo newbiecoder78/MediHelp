@@ -524,7 +524,7 @@ def get_clinical_alternatives(
             "alternative_class": chosen_cand["class"],
             "rationale": rationale,
             "rejection_reasons": rejection_reasons,
-            "display_text": f"💡 Consider {chosen_cand['name']}: {rationale}",
+            "display_text": f"Consider {chosen_cand['name']}: {rationale}",
         }
 
     # If every candidate is rejected, return the standard fallback

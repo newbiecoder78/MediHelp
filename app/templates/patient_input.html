@@ -3,10 +3,10 @@
 
 {% block content %}
 
-<!-- ── 1. Hero Header & Primary Action (Inspired by Reference) ───────── -->
+<!-- ── 1. Hero Header & Primary Action ───────── -->
 <div class="hero-banner">
   <div>
-    <h1 class="hero-title">Good morning, Doctor! 👋</h1>
+    <h1 class="hero-title">Prescription Evaluation &amp; Safety Analysis</h1>
     <p class="hero-subtitle">
       {{ (ui and ui.subtitle) or 'Evaluate multi-drug regimens, Indian brand translations, and clinical dietary interactions.' }}
     </p>
@@ -14,7 +14,7 @@
 
   <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
     <a href="/doctor" class="btn-pill-dark">
-      <span>🩺</span> Clinician Portal
+      Clinician Portal
     </a>
   </div>
 </div>
@@ -23,22 +23,27 @@
 <div class="sub-toolbar">
   <div class="chip-group">
     <button type="button" class="tool-chip active">
-      <span>⚡</span> Quick Presets
+      Quick Presets
     </button>
     <button type="button" class="tool-chip" onclick="switchTab('ocr')">
-      <span>📷</span> Prescription OCR
+      Prescription OCR
     </button>
     <button type="button" class="tool-chip" onclick="document.getElementById('drugs').focus()">
-      <span>✍️</span> Text Input
+      Text Input
     </button>
   </div>
 
   <div style="display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap;">
     <div class="search-pill-box">
-      <span class="search-pill-icon">🔍</span>
-      <input type="text" class="search-pill-input" placeholder="Search 500+ Indian brands..." onkeyup="filterPresets(this.value)">
+      <input type="text" class="search-pill-input" style="padding-left: 1rem;" placeholder="Search Indian brands &amp; generics..." onkeyup="filterPresets(this.value)">
     </div>
-    <button type="button" class="icon-btn-round" title="More Actions">⋮</button>
+    <button type="button" class="icon-btn-round" title="More Actions">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <circle cx="12" cy="5" r="1.5"></circle>
+        <circle cx="12" cy="12" r="1.5"></circle>
+        <circle cx="12" cy="19" r="1.5"></circle>
+      </svg>
+    </button>
   </div>
 </div>
 
@@ -58,9 +63,9 @@
     <div class="rx-card-visual">
       <div class="rx-card-top">
         <div class="rx-card-logo">
-          <span>💊</span> RxNorm
+          RxNorm
         </div>
-        <div class="rx-card-wave">📶</div>
+        <div class="rx-card-wave" style="font-family: var(--font-mono); font-size: 0.75rem; letter-spacing: 1px;">CLINICAL GRAPH</div>
       </div>
       <div class="rx-card-number">
         MED-****6720
@@ -71,8 +76,8 @@
           <strong>NLM Clinical Graph</strong>
         </div>
         <div style="text-align: right;">
-          <span style="display:block; opacity:0.8; font-size:0.7rem; text-transform:uppercase;">Version</span>
-          <strong>Phase 3 Live</strong>
+          <span style="display:block; opacity:0.8; font-size:0.7rem; text-transform:uppercase;">Status</span>
+          <strong>Active Verification</strong>
         </div>
       </div>
     </div>
@@ -134,7 +139,7 @@
     </div>
 
     <div style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-secondary);">
-      <span>Multi-lingual Alerts</span>
+      <span>Multilingual Alerts</span>
       <strong style="color: var(--text-primary);">4 Languages</strong>
     </div>
   </div>
@@ -190,10 +195,10 @@
   <!-- Tab switcher buttons -->
   <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem; border-bottom: 1px solid var(--border-light); padding-bottom: 1rem;">
     <button type="button" id="tab-text-btn" class="preset-pill-btn" style="background: #0f172a; color: #ffffff;" onclick="switchTab('text')">
-      ✍️ Manual / Text Input
+      Manual / Text Input
     </button>
     <button type="button" id="tab-ocr-btn" class="preset-pill-btn" onclick="switchTab('ocr')">
-      📷 Scan Prescription Image (OCR)
+      Scan Prescription Image (OCR)
     </button>
   </div>
 
@@ -201,7 +206,7 @@
   <div id="tab-text">
     <div style="margin-bottom: 1.25rem;">
       <h2 style="font-family: var(--font-heading); font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.35rem;">
-        💊 {{ (ui and ui.identified_medicines) or 'Enter Prescribed Medicines' }}
+        {{ (ui and ui.identified_medicines) or 'Enter Prescribed Medicines' }}
       </h2>
       <p style="font-size: 0.92rem; color: var(--text-secondary);">
         {{ (ui and ui.subtitle) or 'Enter your prescribed medications. Indian brand names and generics are automatically resolved to pharmacological databases.' }}
@@ -210,7 +215,7 @@
 
     {% if error %}
       <div style="background: var(--high-bg); color: var(--high-text); border: 1px solid var(--high-border); padding: 0.85rem 1.2rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; font-weight: 600;">
-        ⚠️ {{ error }}
+        {{ error }}
       </div>
     {% endif %}
 
@@ -236,30 +241,30 @@
       <!-- Demo Presets Toolbar -->
       <div style="margin-bottom: 1.5rem; background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem 1.25rem;">
         <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; display: block; margin-bottom: 0.6rem;">
-          💡 Quick Demo Presets:
+          Clinical Test Presets:
         </span>
         <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;" id="preset-container">
           <button type="button" class="preset-pill-btn" onclick="setMedicines('Warfarin, Ecosprin, Atorvastatin')">
-            🔴 Warfarin + Ecosprin + Atorvastatin
+            Warfarin + Ecosprin + Atorvastatin
           </button>
           <button type="button" class="preset-pill-btn" onclick="setMedicines('Crocin, Aspirin')">
-            💊 Crocin (Paracetamol) + Aspirin
+            Crocin (Paracetamol) + Aspirin
           </button>
           <button type="button" class="preset-pill-btn" onclick="setMedicines('Ciprofloxacin, Dolo')">
-            🥛 Ciprofloxacin (Dairy) + Dolo
+            Ciprofloxacin + Dolo
           </button>
           <button type="button" class="preset-pill-btn" onclick="setMedicines('Levothyroxine, Lisinopril')">
-            🥗 Levothyroxine (Coffee) + Lisinopril
+            Levothyroxine + Lisinopril
           </button>
           <button type="button" class="preset-pill-btn" onclick="setMedicines('Combiflam, Crocin')">
-            🟠 Combiflam Combo Split
+            Combiflam Combination
           </button>
         </div>
       </div>
 
       <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
         <button type="submit" class="btn-pill-dark" style="font-size: 1rem; padding: 0.75rem 2rem;">
-          🔍 {{ (ui and ui.page_title) or 'Check Interactions & Food Precautions' }}
+          {{ (ui and ui.page_title) or 'Check Interactions & Food Precautions' }}
         </button>
         <button type="button" class="tool-chip" onclick="document.getElementById('drugs').value = '';">
           Clear
@@ -272,16 +277,15 @@
   <div id="tab-ocr" style="display: none;">
     <div style="margin-bottom: 1.25rem;">
       <h2 style="font-family: var(--font-heading); font-size: 1.3rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0.35rem;">
-        📷 Scan Printed Prescription with OCR
+        Scan Printed Prescription with OCR
       </h2>
       <p style="font-size: 0.92rem; color: var(--text-secondary);">
-        Upload a clear image of a printed doctor's prescription. Tesseract OCR will extract the medication names and match with confidence scoring.
+        Upload a clear image of a printed doctor's prescription. Optical character recognition extracts medication names and matches them with confidence scoring.
       </p>
     </div>
 
     <!-- Dropzone -->
     <div id="ocr-dropzone" class="dropzone" onclick="document.getElementById('ocr-file-input').click();" style="border: 2px dashed #cbd5e1; border-radius: var(--radius-md); padding: 2.5rem; text-align: center; background: #f8fafc; cursor: pointer;">
-      <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📄</div>
       <div style="font-family: var(--font-heading); font-size: 1.05rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">
         Drop prescription photo here, or <span style="color: var(--primary-accent); text-decoration: underline;">Browse Files</span>
       </div>
@@ -293,12 +297,11 @@
 
     <!-- OCR Loading -->
     <div id="ocr-loading" style="display: none; text-align: center; padding: 2rem;">
-      <div style="font-size: 2rem; animation: pulse 1s infinite;">🔍</div>
       <p style="font-family: var(--font-heading); font-weight: 700; color: var(--primary-accent); margin-top: 0.5rem;">
         Analyzing prescription with Tesseract OCR...
       </p>
       <p style="font-size: 0.85rem; color: var(--text-muted);">
-        Cleaning dosage tokens and matching against Indian pharmaceutical database...
+        Cleaning dosage tokens and matching against pharmaceutical database...
       </p>
     </div>
 
@@ -306,7 +309,7 @@
     <div id="ocr-results-panel" style="display: none; margin-top: 1.5rem;">
       <div style="background: var(--safe-bg); border: 1px solid var(--safe-border); border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
         <h3 style="font-size: 1rem; font-weight: 700; color: var(--safe-text); margin-bottom: 0.25rem;">
-          ✅ Extracted Medicines (Review & Verify Before Checking)
+          Extracted Medicines (Review &amp; Verify Before Checking)
         </h3>
         <p style="font-size: 0.85rem; color: #15803d;">
           Review extracted items below. High confidence items are matched; click ✕ to remove or add missing drugs.
@@ -328,7 +331,7 @@
         
         <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
           <button type="button" class="btn-pill-dark" onclick="submitConfirmedOcrDrugs()">
-            🚀 Confirm & Check Interactions
+            Confirm &amp; Check Interactions
           </button>
           <button type="button" class="tool-chip" onclick="resetOcr()">
             Scan Another Image
@@ -432,12 +435,13 @@
       var pill = document.createElement('div');
       pill.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 1rem; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04);';
 
-      var icon = item.confidence === 'high' ? '✅' : (item.confidence === 'medium' ? '⚠️' : '❌');
+      var badgeClass = item.confidence === 'high' ? 'color:#16a34a; font-weight:700;' : (item.confidence === 'medium' ? 'color:#d97706; font-weight:700;' : 'color:#dc2626; font-weight:700;');
+      var confLabel = item.confidence ? item.confidence.toUpperCase() : '';
       var scoreBadge = item.score ? '(' + item.score + '% match)' : '';
 
       pill.innerHTML = `
         <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
-          <span style="font-size: 1.1rem;">${icon}</span>
+          <span style="font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 999px; background: #f1f5f9; ${badgeClass}">${confLabel}</span>
           <div>
             <strong>${escapeHtml(item.matched || item.raw)}</strong>
             ${item.matched && item.matched.toLowerCase() !== item.raw.toLowerCase() ? '<span style="color:#64748b; font-size:0.85rem;"> (from "' + escapeHtml(item.raw) + '")</span>' : ''}
