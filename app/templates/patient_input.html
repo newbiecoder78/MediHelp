@@ -428,89 +428,26 @@
       return;
     }
 
-    var validItems = [];
-    var unmatchedItems = [];
-
     currentExtractedDrugs.forEach(function(item, index) {
-      if (item.is_valid !== false && item.confidence !== 'unmatched') {
-        validItems.push({ item: item, index: index });
-      } else {
-        unmatchedItems.push({ item: item, index: index });
-      }
+      var pill = document.createElement('div');
+      pill.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 1rem; background: #ffffff; border-radius: 12px; border: 1px solid #e2e8f0; margin-bottom: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04);';
+
+      var icon = item.confidence === 'high' ? '✅' : (item.confidence === 'medium' ? '⚠️' : '❌');
+      var scoreBadge = item.score ? '(' + item.score + '% match)' : '';
+
+      pill.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+          <span style="font-size: 1.1rem;">${icon}</span>
+          <div>
+            <strong>${escapeHtml(item.matched || item.raw)}</strong>
+            ${item.matched && item.matched.toLowerCase() !== item.raw.toLowerCase() ? '<span style="color:#64748b; font-size:0.85rem;"> (from "' + escapeHtml(item.raw) + '")</span>' : ''}
+            <span style="font-size: 0.8rem; color: #64748b; margin-left: 0.5rem;">${scoreBadge}</span>
+          </div>
+        </div>
+        <button type="button" onclick="removeOcrItem(${index})" style="background:none; border:none; color:#dc2626; font-weight:700; cursor:pointer; font-size:1.1rem; padding:0 0.5rem;" title="Remove this item">✕</button>
+      `;
+      container.appendChild(pill);
     });
-
-    // 1. Render Verified Medicines Section
-    var validHeader = document.createElement('div');
-    validHeader.style.cssText = 'font-size: 0.88rem; font-weight: 700; color: #166534; margin-bottom: 0.5rem; text-transform: uppercase; letter-spacing: 0.5px;';
-    validHeader.innerHTML = '💊 Verified Prescription Medicines (' + validItems.length + ')';
-    container.appendChild(validHeader);
-
-    if (validItems.length === 0) {
-      var noValidMsg = document.createElement('div');
-      noValidMsg.style.cssText = 'padding: 0.6rem; color: #b45309; font-size: 0.88rem; background: #fffbeb; border: 1px dashed #fde68a; border-radius: 8px; margin-bottom: 0.75rem;';
-      noValidMsg.innerText = 'No confident medicine matches found in the scan. Please add your medicine names manually below.';
-      container.appendChild(noValidMsg);
-    } else {
-      validItems.forEach(function(entry) {
-        var item = entry.item;
-        var index = entry.index;
-        var pill = document.createElement('div');
-        pill.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 0.65rem 1rem; background: #ffffff; border-radius: 12px; border: 1.5px solid #86efac; margin-bottom: 0.5rem; box-shadow: 0 1px 3px rgba(0,0,0,0.04);';
-
-        var icon = item.confidence === 'high' ? '✅' : '⚠️';
-        var scoreBadge = item.score ? '(' + item.score + '% match)' : '';
-
-        pill.innerHTML = `
-          <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
-            <span style="font-size: 1.1rem;">${icon}</span>
-            <div>
-              <strong style="color: #15803d; font-size: 0.95rem;">${escapeHtml(item.matched || item.raw)}</strong>
-              ${item.matched && item.matched.toLowerCase() !== item.raw.toLowerCase() ? '<span style="color:#64748b; font-size:0.85rem;"> (from "' + escapeHtml(item.raw) + '")</span>' : ''}
-              <span style="font-size: 0.8rem; color: #16a34a; font-weight: 600; margin-left: 0.4rem;">${scoreBadge}</span>
-            </div>
-          </div>
-          <button type="button" onclick="removeOcrItem(${index})" style="background:none; border:none; color:#dc2626; font-weight:700; cursor:pointer; font-size:1.1rem; padding:0 0.5rem;" title="Remove this medicine">✕</button>
-        `;
-        container.appendChild(pill);
-      });
-    }
-
-    // 2. Render Unmatched / Ignored Lines (Excluded from check)
-    if (unmatchedItems.length > 0) {
-      var unmatchedHeader = document.createElement('div');
-      unmatchedHeader.style.cssText = 'font-size: 0.82rem; font-weight: 700; color: #94a3b8; margin: 1rem 0 0.4rem 0; text-transform: uppercase; letter-spacing: 0.5px; display: flex; align-items: center; gap: 0.4rem;';
-      unmatchedHeader.innerHTML = '<span>🚫 Excluded OCR Lines / Non-Medicines (' + unmatchedItems.length + ')</span>';
-      container.appendChild(unmatchedHeader);
-
-      unmatchedItems.forEach(function(entry) {
-        var item = entry.item;
-        var index = entry.index;
-        var pill = document.createElement('div');
-        pill.style.cssText = 'display: flex; align-items: center; justify-content: space-between; padding: 0.5rem 0.85rem; background: #f8fafc; border-radius: 10px; border: 1px solid #e2e8f0; margin-bottom: 0.35rem; opacity: 0.75;';
-
-        pill.innerHTML = `
-          <div style="display: flex; align-items: center; gap: 0.5rem; flex: 1;">
-            <span style="font-size: 0.9rem;">❌</span>
-            <span style="color: #64748b; font-size: 0.88rem; text-decoration: line-through;">${escapeHtml(item.raw)}</span>
-            <span style="font-size: 0.75rem; background: #fee2e2; color: #991b1b; padding: 0.1rem 0.45rem; border-radius: 4px; font-weight: 600;">Ignored</span>
-          </div>
-          <div style="display: flex; align-items: center; gap: 0.35rem;">
-            <button type="button" onclick="promoteToMedicine(${index})" class="preset-pill-btn" style="font-size: 0.75rem; padding: 0.2rem 0.55rem; background: #ffffff;">＋ Keep as Medicine</button>
-            <button type="button" onclick="removeOcrItem(${index})" style="background:none; border:none; color:#94a3b8; font-weight:700; cursor:pointer; font-size:1rem; padding:0 0.35rem;" title="Delete line">✕</button>
-          </div>
-        `;
-        container.appendChild(pill);
-      });
-    }
-  }
-
-  function promoteToMedicine(index) {
-    if (currentExtractedDrugs[index]) {
-      currentExtractedDrugs[index].is_valid = true;
-      currentExtractedDrugs[index].confidence = 'medium';
-      currentExtractedDrugs[index].matched = currentExtractedDrugs[index].raw;
-      renderOcrVerificationList();
-    }
   }
 
   function removeOcrItem(index) {
@@ -536,17 +473,12 @@
   }
 
   function submitConfirmedOcrDrugs() {
-    // Strictly filter to only verified medicines (exclude unmatched / cross-marked lines)
-    var validDrugs = currentExtractedDrugs.filter(function(d) {
-      return d.is_valid !== false && d.confidence !== 'unmatched';
-    });
-
-    if (validDrugs.length === 0) {
-      alert('Please verify or add at least one valid medicine before checking interactions.');
+    if (currentExtractedDrugs.length === 0) {
+      alert('Please add or verify at least one medicine before checking.');
       return;
     }
 
-    var drugNames = validDrugs.map(function(d) {
+    var drugNames = currentExtractedDrugs.map(function(d) {
       return d.matched || d.raw;
     });
 

@@ -158,30 +158,20 @@ def clean_ocr_text(raw_text: str) -> list[str]:
         cleaned_line = re.sub(r"\b\d+\b", " ", cleaned_line)
         cleaned_line = re.sub(r"\s+", " ", cleaned_line).strip()
 
-    # Common prescription words & abbreviations to ignore
-    noise_words = {
-        "prescription", "preseription", "doctor", "patient", "clinic", "hospital",
-        "signature", "date", "address", "phone", "contact", "mbbs", "diagnosis",
-        "treatment", "advice", "history", "chief", "complaint", "consultant", "general",
-        "physician", "surgeon", "department", "regd", "regno", "rxnorm", "pharma",
-        "medical", "medication", "medicines", "tablets", "capsules", "syrup"
-    }
+        # Split words or short multi-word phrases
+        if len(cleaned_line) >= 3:
+            tokens = [t.strip() for t in cleaned_line.split() if len(t.strip()) >= 3]
+            for token in tokens:
+                # Strip leading joined prefixes like Tab/Cap/Inj/Syp/Rx
+                token = re.sub(r"^(tab|cap|inj|syp|rx)", "", token, flags=re.IGNORECASE)
+                # Strip trailing joined dosage numbers/units like 500mg/75mg
+                token = re.sub(r"\d+(mg|ml|mcg|gm|g|iu)?$", "", token, flags=re.IGNORECASE)
+                token = token.strip("-+ ")
 
-    # Split words or short multi-word phrases
-    if len(cleaned_line) >= 3:
-        tokens = [t.strip() for t in cleaned_line.split() if len(t.strip()) >= 3]
-        for token in tokens:
-            # Strip leading joined prefixes like Tab/Cap/Inj/Syp/Rx
-            token = re.sub(r"^(tab|cap|inj|syp|rx)", "", token, flags=re.IGNORECASE)
-            # Strip trailing joined dosage numbers/units like 500mg/75mg
-            token = re.sub(r"\d+(mg|ml|mcg|gm|g|iu)?$", "", token, flags=re.IGNORECASE)
-            token = token.strip("-+ ")
-
-            # Discard noise words & prescription headers
-            token_low = token.lower()
-            if len(token) >= 3 and token_low not in noise_words:
-                if token.isalpha() or "-" in token or "+" in token:
-                    candidates.append(token)
+                # Discard noise words & prescription headers
+                if len(token) >= 3 and token.lower() not in {"prescription", "preseription", "doctor", "patient", "clinic", "hospital"}:
+                    if token.isalpha() or "-" in token or "+" in token:
+                        candidates.append(token)
 
     # Deduplicate while preserving order
     seen = set()
