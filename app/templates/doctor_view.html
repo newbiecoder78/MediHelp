@@ -1,0 +1,269 @@
+{% extends "base.html" %}
+{% block title %}MediHelp — Clinician Decision Support View{% endblock %}
+
+{% block content %}
+
+<!-- ── Clinician Header & Navigation ─────────────────────────────────── -->
+<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.75rem;">
+  <div>
+    <h1 style="font-family: var(--font-heading); font-size: 1.6rem; font-weight: 800; color: var(--text-primary); display: flex; align-items: center; gap: 0.5rem;">
+      🩺 Clinician Decision Support Portal
+      <span style="font-size: 0.75rem; background: #e0f2fe; color: #0284c7; border: 1px solid #bae6fd; padding: 0.2rem 0.6rem; border-radius: 999px; font-weight: 700; text-transform: uppercase;">
+        Provider Mode
+      </span>
+    </h1>
+    <p style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 0.25rem;">
+      Pharmacological analysis, RxNorm ontology mapping, and evidence-based safer alternative recommendations.
+    </p>
+  </div>
+
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+    <a href="/patient" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.55rem 1.1rem;">
+      👥 Return to Patient View
+    </a>
+  </div>
+</div>
+
+<!-- ── Mandatory Clinical Disclaimer ─────────────────────────────────── -->
+<div style="background: #fffbeb; border: 1px solid #fde68a; border-left: 5px solid #d97706; padding: 0.9rem 1.25rem; border-radius: var(--radius-md); margin-bottom: 1.5rem; font-size: 0.92rem; color: #92400e;">
+  <strong>⚕️ Clinical Notice:</strong>
+  <em>This is a decision-support flag, not a prescription. The final call is always the clinician's.</em>
+</div>
+
+{% if has_data and result %}
+
+  <!-- ── Summary Statistics Grid ─────────────────────────────────────── -->
+  <div class="summary-grid">
+    <div class="summary-box sbox-total">
+      <div class="count">{{ result.resolved_drugs|length }}</div>
+      <div class="label">Prescribed Agents</div>
+    </div>
+    <div class="summary-box sbox-high">
+      <div class="count">{{ result.severity_summary.high }}</div>
+      <div class="label">🔴 High Risk Flags</div>
+    </div>
+    <div class="summary-box sbox-medium">
+      <div class="count">{{ result.severity_summary.medium }}</div>
+      <div class="label">🟠 Medium Risk Flags</div>
+    </div>
+    <div class="summary-box sbox-food">
+      <div class="count">{{ result.severity_summary.food_total or (result.food_interactions|length) }}</div>
+      <div class="label">🥗 Dietary Cautions</div>
+    </div>
+  </div>
+
+  <!-- ── Active Medication Regimen Table ─────────────────────────────── -->
+  <div class="card">
+    <h2>📋 Evaluated Medication Regimen</h2>
+    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1rem;">
+      Indian brand names normalized to active generic chemical entities with RxCUI ontologies:
+    </p>
+
+    <div style="overflow-x: auto;">
+      <table style="width: 100%; border-collapse: collapse; font-size: 0.95rem; text-align: left;">
+        <thead>
+          <tr style="background: #f1f5f9; border-bottom: 2px solid #cbd5e1; color: var(--text-secondary); font-weight: 700;">
+            <th style="padding: 0.75rem 1rem;">Entered Name</th>
+            <th style="padding: 0.75rem 1rem;">Resolved Generic Entity</th>
+            <th style="padding: 0.75rem 1rem;">RxCUI Code</th>
+            <th style="padding: 0.75rem 1rem;">Therapeutic Class</th>
+            <th style="padding: 0.75rem 1rem;">Clinical Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for drug in result.resolved_drugs %}
+            <tr style="border-bottom: 1px solid var(--border-subtle); background: {% if drug.is_flagged %}#fffdfa{% else %}#ffffff{% endif %};">
+              <td style="padding: 0.75rem 1rem; font-weight: 600;">
+                {{ drug.input }}
+                {% if drug.mapped %}
+                  <span style="font-size: 0.75rem; background: #e2e8f0; color: #475569; padding: 0.15rem 0.45rem; border-radius: 4px; margin-left: 0.35rem;">Brand</span>
+                {% endif %}
+              </td>
+              <td style="padding: 0.75rem 1rem; color: var(--primary); font-weight: 700;">
+                {{ drug.generic | title }}
+              </td>
+              <td style="padding: 0.75rem 1rem; font-family: monospace; color: var(--text-muted);">
+                {% if drug.resolved %}
+                  <span style="color: #16a34a; font-weight: 700;">✓</span> {{ drug.rxcui }}
+                {% else %}
+                  <span style="color: #dc2626; font-weight: 700;">✗</span> Unverified
+                {% endif %}
+              </td>
+              <td style="padding: 0.75rem 1rem; color: var(--text-secondary);">
+                {{ drug.drug_class }}
+              </td>
+              <td style="padding: 0.75rem 1rem;">
+                {% if drug.is_flagged %}
+                  <span style="background: #fee2e2; color: #991b1b; padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; border: 1px solid #fca5a5;">
+                    ⚠️ Interaction Flagged
+                  </span>
+                {% else %}
+                  <span style="background: #dcfce7; color: #166534; padding: 0.25rem 0.6rem; border-radius: 999px; font-size: 0.8rem; font-weight: 700; border: 1px solid #86efac;">
+                    ✓ Unflagged
+                  </span>
+                {% endif %}
+              </td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Flagged Drug-Drug Interactions & Safer Alternatives ─────────── -->
+  <div class="card" style="border-top: 4px solid var(--primary);">
+    <h2>⚠️ Flagged Drug-Drug Interactions & Safer Alternatives</h2>
+    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+      Detailed pharmacological interactions with evidence-based alternative recommendations to lower patient risk:
+    </p>
+
+    {% if result.interactions %}
+      {% for ix in result.interactions %}
+        <div style="background: #ffffff; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1.25rem; box-shadow: var(--shadow-sm);">
+          
+          <!-- Top Row: Pair & Severity -->
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="font-family: var(--font-heading); font-size: 1.2rem; font-weight: 800; color: var(--text-primary);">
+              💊 {{ ix.drug_a_name | title }} <span style="color: #ef4444; margin: 0 0.25rem;">⚡</span> {{ ix.drug_b_name | title }}
+            </div>
+            <span class="badge {% if ix.severity == 'high' %}badge-high{% elif ix.severity == 'medium' %}badge-medium{% else %}badge-low{% endif %}">
+              {{ ix.severity | upper }} RISK
+            </span>
+          </div>
+
+          <!-- Description / Mechanism -->
+          <div style="background: #f8fafc; border-left: 3px solid #64748b; padding: 0.75rem 1rem; border-radius: 4px; margin-bottom: 1rem; font-size: 0.95rem; line-height: 1.5; color: var(--text-primary);">
+            <strong>Clinical Mechanism:</strong> {{ ix.description }}
+          </div>
+
+          <!-- Safer Alternative Suggestion Card -->
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); padding: 0.9rem 1rem; margin-bottom: 0.75rem;">
+            <div style="font-weight: 700; color: #166534; font-size: 0.92rem; margin-bottom: 0.35rem; display: flex; align-items: center; gap: 0.4rem;">
+              <span>💡 Pharmacological Alternative Analysis:</span>
+            </div>
+
+            <div style="display: flex; flex-direction: column; gap: 0.5rem; font-size: 0.92rem;">
+              <!-- Alternative for Drug A -->
+              {% if ix.alt_a and ix.alt_a.has_alternative %}
+                <div style="color: #14532d;">
+                  <strong>For {{ ix.drug_a_name|title }} ({{ ix.alt_a.drug_class }}):</strong>
+                  Substitute with <span style="background: #dcfce7; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 4px; color: #166534;">{{ ix.alt_a.alternative_name }}</span> — {{ ix.alt_a.rationale }}
+                </div>
+              {% endif %}
+
+              <!-- Alternative for Drug B -->
+              {% if ix.alt_b and ix.alt_b.has_alternative %}
+                <div style="color: #14532d;">
+                  <strong>For {{ ix.drug_b_name|title }} ({{ ix.alt_b.drug_class }}):</strong>
+                  Substitute with <span style="background: #dcfce7; font-weight: 700; padding: 0.1rem 0.4rem; border-radius: 4px; color: #166534;">{{ ix.alt_b.alternative_name }}</span> — {{ ix.alt_b.rationale }}
+                </div>
+              {% endif %}
+
+              <!-- Neither has alternative -->
+              {% if (not ix.alt_a or not ix.alt_a.has_alternative) and (not ix.alt_b or not ix.alt_b.has_alternative) %}
+                <div style="color: #713f12; font-style: italic;">
+                  ⚠️ No clear alternative identified — clinical review recommended.
+                </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <!-- Metadata Footer -->
+          <div style="font-size: 0.8rem; color: var(--text-muted); display: flex; gap: 1.25rem; flex-wrap: wrap;">
+            <span><strong>Source:</strong> {{ ix.source|upper }} Knowledge Graph</span>
+            <span><strong>RxCUIs:</strong> {{ ix.drug_a_rxcui }} &amp; {{ ix.drug_b_rxcui }}</span>
+          </div>
+
+        </div>
+      {% endfor %}
+    {% else %}
+      <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); padding: 1.25rem; color: #166534; font-weight: 600;">
+        ✅ No severe or moderate drug-drug interactions detected among the evaluated medicines.
+      </div>
+    {% endif %}
+  </div>
+
+  <!-- ── Flagged Drug-Food Interactions ──────────────────────────────── -->
+  {% if result.food_interactions %}
+  <div class="card" style="border-top: 4px solid #0d9488;">
+    <h2>🥗 Flagged Drug-Food & Dietary Interactions</h2>
+    <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 1.25rem;">
+      Dietary components that inhibit metabolic pathways or impair absorption:
+    </p>
+
+    {% for fix in result.food_interactions %}
+      <div style="background: #ffffff; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1.25rem; margin-bottom: 1rem; box-shadow: var(--shadow-sm);">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
+          <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 800; color: #115e59;">
+            💊 {{ fix.drug_name | title }} <span style="color: #0d9488;">⚡</span> 🥗 {{ fix.food_display }}
+          </div>
+          <span class="badge badge-food">
+            {{ fix.severity | upper }} DIETARY RISK
+          </span>
+        </div>
+
+        <p style="font-size: 0.95rem; color: #042f2e; line-height: 1.5; margin-bottom: 0.6rem;">
+          {{ fix.description }}
+        </p>
+
+        {% if fix.recommendation %}
+          <div style="background: rgba(13, 148, 136, 0.08); border-left: 3px solid #0d9488; padding: 0.6rem 0.85rem; border-radius: 4px; font-size: 0.9rem; color: #115e59; margin-bottom: 0.6rem;">
+            <strong>Dietary Directive:</strong> {{ fix.recommendation }}
+          </div>
+        {% endif %}
+
+        {% if fix.alt_drug and fix.alt_drug.has_alternative %}
+          <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 4px; padding: 0.6rem 0.85rem; font-size: 0.9rem; color: #166534; margin-bottom: 0.6rem;">
+            <strong>💡 Alternative:</strong> {{ fix.alt_drug.alternative_name }} ({{ fix.alt_drug.rationale }})
+          </div>
+        {% endif %}
+      </div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+{% else %}
+
+  <!-- ── No Data State / Direct Clinician Check ───────────────────────── -->
+  <div class="card" style="text-align: center; padding: 3rem 1.5rem;">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">🩺</div>
+    <h2 style="justify-content: center; margin-bottom: 0.5rem;">Clinician Interaction Evaluator</h2>
+    <p style="color: var(--text-secondary); max-width: 500px; margin: 0 auto 1.5rem auto;">
+      Enter a patient medication regimen below to generate structured clinical interaction matrices and safer alternative recommendations.
+    </p>
+
+    <form action="/doctor" method="POST" style="max-width: 600px; margin: 0 auto; text-align: left;">
+      <div style="margin-bottom: 1rem;">
+        <label for="drugs" style="font-weight: 600;">Prescribed Medications:</label>
+        <textarea id="drugs" name="drugs" rows="4" required placeholder="e.g. Warfarin, Ecosprin, Atorvastatin, Metformin"></textarea>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+        🔍 Evaluate Clinical Interactions &amp; Alternatives
+      </button>
+    </form>
+  </div>
+
+{% endif %}
+
+<!-- ── Quick Test Regimens for Clinician Demo ────────────────────────── -->
+<div class="card" style="background: #f8fafc; border: 1px solid var(--border-subtle);">
+  <h3 style="font-size: 1.05rem; font-weight: 700; margin-bottom: 0.75rem; color: var(--text-primary);">
+    💡 Demo Clinical Test Presets
+  </h3>
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+    <a href="/doctor?drugs=Warfarin,%20Ecosprin" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+      🔴 Warfarin + Ecosprin (Bleeding Risk ➔ Suggests Paracetamol)
+    </a>
+    <a href="/doctor?drugs=Atorvastatin,%20Metformin" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+      🥗 Atorvastatin + Metformin (CYP3A4 ➔ Suggests Rosuvastatin)
+    </a>
+    <a href="/doctor?drugs=Ciprofloxacin,%20Combiflam" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+      🥛 Ciprofloxacin + Combiflam (Chelation ➔ Suggests Amoxicillin/Paracetamol)
+    </a>
+    <a href="/doctor?drugs=Telmisartan,%20Lisinopril" class="btn btn-secondary" style="font-size: 0.85rem; padding: 0.4rem 0.8rem;">
+      ⚠️ Dual ACEi/ARB (Hyperkalemia ➔ Suggests Amlodipine)
+    </a>
+  </div>
+</div>
+
+{% endblock %}

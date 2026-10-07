@@ -17,16 +17,21 @@ from PIL import Image, ImageEnhance, ImageFilter
 import pytesseract
 from rapidfuzz import process, fuzz
 
-# Configure Tesseract path if present in standard Windows locations
-_TESSERACT_SEARCH_PATHS = [
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe",
-    r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
-    r"C:\Users\Hp\AppData\Local\Programs\Tesseract-OCR\tesseract.exe",
-]
-for p in _TESSERACT_SEARCH_PATHS:
-    if os.path.exists(p):
-        pytesseract.pytesseract.tesseract_cmd = p
-        break
+# Explicitly point pytesseract to Tesseract OCR executable on Windows
+_TESSERACT_EXE = r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+if os.path.exists(_TESSERACT_EXE):
+    pytesseract.pytesseract.tesseract_cmd = _TESSERACT_EXE
+else:
+    _TESSERACT_SEARCH_PATHS = [
+        r"C:\Program Files (x86)\Tesseract-OCR\tesseract.exe",
+        r"C:\Users\Hp\AppData\Local\Programs\Tesseract-OCR\tesseract.exe",
+    ]
+    for p in _TESSERACT_SEARCH_PATHS:
+        if os.path.exists(p):
+            pytesseract.pytesseract.tesseract_cmd = p
+            break
+    else:
+        pytesseract.pytesseract.tesseract_cmd = _TESSERACT_EXE
 
 # Load reference drug vocabulary (brands + generics)
 _DATA_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "brand_to_generic.json")

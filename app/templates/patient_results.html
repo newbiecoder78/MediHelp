@@ -3,11 +3,41 @@
 
 {% block content %}
 
+<style>
+  .btn-listen {
+    background: rgba(2, 132, 199, 0.08);
+    border: 1px solid rgba(2, 132, 199, 0.25);
+    color: var(--primary);
+    font-size: 0.8rem;
+    font-weight: 700;
+    padding: 0.25rem 0.65rem;
+    border-radius: var(--radius-full);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    transition: all 0.2s ease;
+  }
+  .btn-listen:hover {
+    background: var(--primary);
+    color: #ffffff;
+  }
+  .btn-listen:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+</style>
+
 <!-- ── Navigation Header ─────────────────────────────────────────────── -->
 <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
-  <a href="/patient?lang={{ lang or result.current_lang or 'en' }}" class="btn btn-secondary">
-    {{ (result.ui and result.ui.check_another) or '← Check Another Prescription' }}
-  </a>
+  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+    <a href="/patient?lang={{ lang or result.current_lang or 'en' }}&clear=1" class="btn btn-secondary">
+      {{ (result.ui and result.ui.check_another) or '← Check Another Prescription' }}
+    </a>
+    <a href="/doctor?drugs={{ (result.raw_input or '') | urlencode }}" class="btn btn-secondary" style="background: #f0f9ff; color: #0284c7; border-color: #bae6fd; font-weight: 700;">
+      🩺 Clinician View
+    </a>
+  </div>
   <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">
     Analysis Complete &middot; Powered by RxNorm
   </span>
@@ -79,7 +109,14 @@
 
 <!-- ── Drug-Drug Interaction results ────────────────────────────────────── -->
 <div class="card">
-  <h2>{{ (result.ui and result.ui.clinical_alerts) or '⚠️ Drug-Drug Interaction Alerts' }}</h2>
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+    <h2 style="margin-bottom: 0;">{{ (result.ui and result.ui.clinical_alerts) or '⚠️ Drug-Drug Interaction Alerts' }}</h2>
+    {% if result.interactions or result.food_interactions %}
+      <button type="button" id="btn-read-all" class="btn btn-secondary" onclick="readAllAlerts()" style="padding: 0.45rem 0.95rem; font-size: 0.88rem; display: flex; align-items: center; gap: 0.4rem; background: #f8fafc; border-color: #cbd5e1; font-weight: 700; color: var(--primary);">
+        <span id="read-all-icon">🔊</span> <span id="read-all-text">Read All Alerts</span>
+      </button>
+    {% endif %}
+  </div>
 
   {% if result.interactions %}
 
@@ -91,7 +128,12 @@
             <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #7f1d1d;">
               {{ ix.drug_a_name | title }} <span style="color: #ef4444;">⚡</span> {{ ix.drug_b_name | title }}
             </div>
-            <span class="badge badge-high">🔴 {{ (result.ui and result.ui.summary_high) or 'High Risk' }}</span>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <button type="button" class="btn-listen" onclick="playSingleAlert(this, '{{ ix.description|escape }}', '{{ lang or result.current_lang or 'en' }}', '{{ ix.drug_a_name|lower }}_{{ ix.drug_b_name|lower }}')">
+                🔊 {{ (result.ui and result.ui.listen) or 'Listen' }}
+              </button>
+              <span class="badge badge-high">🔴 {{ (result.ui and result.ui.summary_high) or 'High Risk' }}</span>
+            </div>
           </div>
           <p style="font-size: 1rem; color: #450a0a; line-height: 1.55; margin-bottom: 0.75rem;">
             {{ ix.description }}
@@ -112,7 +154,12 @@
             <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #78350f;">
               {{ ix.drug_a_name | title }} <span style="color: #f59e0b;">⚡</span> {{ ix.drug_b_name | title }}
             </div>
-            <span class="badge badge-medium">🟠 {{ (result.ui and result.ui.summary_medium) or 'Medium Risk' }}</span>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <button type="button" class="btn-listen" onclick="playSingleAlert(this, '{{ ix.description|escape }}', '{{ lang or result.current_lang or 'en' }}', '{{ ix.drug_a_name|lower }}_{{ ix.drug_b_name|lower }}')">
+                🔊 {{ (result.ui and result.ui.listen) or 'Listen' }}
+              </button>
+              <span class="badge badge-medium">🟠 {{ (result.ui and result.ui.summary_medium) or 'Medium Risk' }}</span>
+            </div>
           </div>
           <p style="font-size: 1rem; color: #451a03; line-height: 1.55; margin-bottom: 0.75rem;">
             {{ ix.description }}
@@ -133,7 +180,12 @@
             <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #713f12;">
               {{ ix.drug_a_name | title }} <span style="color: #eab308;">⚡</span> {{ ix.drug_b_name | title }}
             </div>
-            <span class="badge badge-low">🟡 {{ (result.ui and result.ui.summary_low) or 'Low Risk' }}</span>
+            <div style="display: flex; align-items: center; gap: 0.5rem;">
+              <button type="button" class="btn-listen" onclick="playSingleAlert(this, '{{ ix.description|escape }}', '{{ lang or result.current_lang or 'en' }}', '{{ ix.drug_a_name|lower }}_{{ ix.drug_b_name|lower }}')">
+                🔊 {{ (result.ui and result.ui.listen) or 'Listen' }}
+              </button>
+              <span class="badge badge-low">🟡 {{ (result.ui and result.ui.summary_low) or 'Low Risk' }}</span>
+            </div>
           </div>
           <p style="font-size: 1rem; color: #422006; line-height: 1.55; margin-bottom: 0.75rem;">
             {{ ix.description }}
@@ -194,13 +246,18 @@
         <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #115e59;">
           💊 {{ fix.drug_name | title }} <span style="color: #0d9488;">⚡</span> {{ food_icon }} {{ fix.food_display }}
         </div>
-        <span class="badge badge-food">
-          {% if fix.severity == 'high' %}
-            🔴 {{ (result.ui and result.ui.food_badge) or 'DIETARY ALERT' }} (HIGH)
-          {% else %}
-            🥗 {{ (result.ui and result.ui.food_badge) or 'DIETARY ALERT' }}
-          {% endif %}
-        </span>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <button type="button" class="btn-listen" onclick="playSingleAlert(this, '{{ fix.description|escape }}', '{{ lang or result.current_lang or 'en' }}', '{{ fix.drug_name|lower }}_{{ fix.food_name|lower }}')">
+            🔊 {{ (result.ui and result.ui.listen) or 'Listen' }}
+          </button>
+          <span class="badge badge-food">
+            {% if fix.severity == 'high' %}
+              🔴 {{ (result.ui and result.ui.food_badge) or 'DIETARY ALERT' }} (HIGH)
+            {% else %}
+              🥗 {{ (result.ui and result.ui.food_badge) or 'DIETARY ALERT' }}
+            {% endif %}
+          </span>
+        </div>
       </div>
 
       <p style="font-size: 1rem; color: #042f2e; line-height: 1.55; margin-bottom: 0.6rem;">
@@ -230,6 +287,135 @@
   <strong style="color: var(--text-primary);">⚕️ {{ (result.ui and result.ui.disclaimer_title) or 'Clinical Disclaimer:' }}</strong>
   {{ (result.ui and result.ui.disclaimer_text) or 'MediHelp leverages publicly available drug interaction and ontological data from the U.S. National Library of Medicine (NLM) RxNorm/RxNav. This software is for rapid decision support and educational reference only and does not replace professional medical judgment.' }}
 </div>
+
+<!-- ── Audio Voice Controller Script ───────────────────────────────────── -->
+<script>
+  var globalAudio = new Audio();
+  var isPlaying = false;
+  var currentAlertIndex = 0;
+  var alertQueue = [];
+
+  function getAlertsPayload() {
+    var items = [];
+    {% for ix in result.interactions %}
+      items.push({
+        text: {{ ix.description | tojson }},
+        lang: {{ (lang or result.current_lang or 'en') | tojson }},
+        key: {{ (ix.drug_a_name|lower ~ '_' ~ ix.drug_b_name|lower) | tojson }}
+      });
+    {% endfor %}
+    {% for fix in result.food_interactions %}
+      items.push({
+        text: {{ fix.description | tojson }},
+        lang: {{ (lang or result.current_lang or 'en') | tojson }},
+        key: {{ (fix.drug_name|lower ~ '_' ~ fix.food_name|lower) | tojson }}
+      });
+    {% endfor %}
+    return items;
+  }
+
+  function playSingleAlert(btnElement, text, lang, key) {
+    if (isPlaying) {
+      globalAudio.pause();
+      globalAudio.currentTime = 0;
+      resetAudioButtons();
+    }
+
+    var originalHtml = btnElement.innerHTML;
+    btnElement.innerHTML = '⏳ Loading...';
+    btnElement.disabled = true;
+
+    var audioUrl = '/audio/tts?text=' + encodeURIComponent(text) + '&lang=' + encodeURIComponent(lang) + '&key=' + encodeURIComponent(key);
+    globalAudio.src = audioUrl;
+
+    globalAudio.onplay = function() {
+      btnElement.innerHTML = '🔊 Playing...';
+    };
+
+    globalAudio.onended = function() {
+      btnElement.innerHTML = originalHtml;
+      btnElement.disabled = false;
+      isPlaying = false;
+    };
+
+    globalAudio.onerror = function() {
+      btnElement.innerHTML = '⚠️ Unavailable';
+      setTimeout(function() {
+        btnElement.innerHTML = originalHtml;
+        btnElement.disabled = false;
+      }, 2000);
+      isPlaying = false;
+    };
+
+    globalAudio.play()
+      .then(function() {
+        isPlaying = true;
+      })
+      .catch(function(err) {
+        btnElement.innerHTML = originalHtml;
+        btnElement.disabled = false;
+        isPlaying = false;
+      });
+  }
+
+  function readAllAlerts() {
+    var readAllBtn = document.getElementById('btn-read-all');
+    var readAllText = document.getElementById('read-all-text');
+
+    if (isPlaying) {
+      globalAudio.pause();
+      globalAudio.currentTime = 0;
+      isPlaying = false;
+      if (readAllText) readAllText.innerText = 'Read All Alerts';
+      resetAudioButtons();
+      return;
+    }
+
+    alertQueue = getAlertsPayload();
+    if (!alertQueue || alertQueue.length === 0) return;
+
+    currentAlertIndex = 0;
+    isPlaying = true;
+    if (readAllText) readAllText.innerText = '⏹️ Stop Reading';
+    playNextInQueue();
+  }
+
+  function playNextInQueue() {
+    if (!isPlaying || currentAlertIndex >= alertQueue.length) {
+      isPlaying = false;
+      var readAllText = document.getElementById('read-all-text');
+      if (readAllText) readAllText.innerText = 'Read All Alerts';
+      return;
+    }
+
+    var item = alertQueue[currentAlertIndex];
+    var audioUrl = '/audio/tts?text=' + encodeURIComponent(item.text) + '&lang=' + encodeURIComponent(item.lang) + '&key=' + encodeURIComponent(item.key);
+    globalAudio.src = audioUrl;
+
+    globalAudio.onended = function() {
+      currentAlertIndex++;
+      playNextInQueue();
+    };
+
+    globalAudio.onerror = function() {
+      currentAlertIndex++;
+      playNextInQueue();
+    };
+
+    globalAudio.play().catch(function(err) {
+      currentAlertIndex++;
+      playNextInQueue();
+    });
+  }
+
+  function resetAudioButtons() {
+    var buttons = document.querySelectorAll('.btn-listen');
+    buttons.forEach(function(b) {
+      b.disabled = false;
+      b.innerHTML = '🔊 {{ (result.ui and result.ui.listen) or "Listen" }}';
+    });
+  }
+</script>
 
 {% endblock %}
 
