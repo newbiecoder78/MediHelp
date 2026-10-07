@@ -3,102 +3,125 @@
 
 {% block content %}
 
-<style>
-  .btn-listen {
-    background: rgba(2, 132, 199, 0.08);
-    border: 1px solid rgba(2, 132, 199, 0.25);
-    color: var(--primary);
-    font-size: 0.8rem;
-    font-weight: 700;
-    padding: 0.25rem 0.65rem;
-    border-radius: var(--radius-full);
-    cursor: pointer;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.3rem;
-    transition: all 0.2s ease;
-  }
-  .btn-listen:hover {
-    background: var(--primary);
-    color: #ffffff;
-  }
-  .btn-listen:disabled {
-    opacity: 0.6;
-    cursor: not-allowed;
-  }
-</style>
+<!-- ── 1. Hero Header & Actions (Inspired by Reference) ──────────────── -->
+<div class="hero-banner">
+  <div>
+    <h1 class="hero-title">Prescription Evaluation Results</h1>
+    <p class="hero-subtitle">
+      Analysis complete &middot; {{ result.resolved_drugs|length }} medications evaluated against RxNorm & dietary interaction matrices.
+    </p>
+  </div>
 
-<!-- ── Navigation Header ─────────────────────────────────────────────── -->
-<div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 0.75rem;">
-  <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-    <a href="/patient?lang={{ lang or result.current_lang or 'en' }}&clear=1" class="btn btn-secondary">
-      {{ (result.ui and result.ui.check_another) or '← Check Another Prescription' }}
+  <div style="display: flex; gap: 0.75rem; align-items: center; flex-wrap: wrap;">
+    <a href="/patient?lang={{ lang or result.current_lang or 'en' }}&clear=1" class="tool-chip">
+      {{ (result.ui and result.ui.check_another) or '← New Prescription' }}
     </a>
-    <a href="/doctor?drugs={{ (result.raw_input or '') | urlencode }}" class="btn btn-secondary" style="background: #f0f9ff; color: #0284c7; border-color: #bae6fd; font-weight: 700;">
-      🩺 Clinician View
+    <a href="/doctor?drugs={{ (result.raw_input or '') | urlencode }}" class="btn-pill-dark">
+      <span>🩺</span> Clinician View
     </a>
   </div>
-  <span style="font-size: 0.9rem; color: var(--text-muted); font-weight: 500;">
-    Analysis Complete &middot; Powered by RxNorm
-  </span>
 </div>
 
 <!-- ── Non-fatal errors / warnings ────────────────────────────────────── -->
 {% if result.errors %}
   {% for err in result.errors %}
-    <div class="msg-warning">
-      <strong>⚠️ Warning:</strong> {{ err }}
+    <div style="background: var(--med-bg); color: var(--med-text); border: 1px solid var(--med-border); padding: 0.85rem 1.2rem; border-radius: var(--radius-md); margin-bottom: 1.25rem; font-weight: 600;">
+      ⚠️ {{ err }}
     </div>
   {% endfor %}
 {% endif %}
 
-<!-- ── Severity summary counters ──────────────────────────────────────── -->
+<!-- ── 2. Reference Style Metric Summary Cards ───────────────────────── -->
 {% if result.interactions or result.food_interactions %}
-<div class="summary-grid">
-  <div class="summary-box sbox-high">
-    <div class="count">{{ result.severity_summary.high }}</div>
-    <div class="label">🔴 {{ (result.ui and result.ui.summary_high) or 'High Risk' }}</div>
+<div class="dashboard-grid" style="grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); margin-bottom: 1.75rem;">
+  
+  <!-- High Risk Card -->
+  <div class="dash-card" style="border-left: 5px solid #ef4444; background: #fffbfb;">
+    <div class="dash-card-header">
+      <span class="dash-card-title" style="font-size: 0.95rem; color: #991b1b;">High Risk Flags</span>
+      <span class="badge badge-high">🔴 Urgent</span>
+    </div>
+    <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: #991b1b; margin: 0.3rem 0;">
+      {{ result.severity_summary.high }}
+    </div>
+    <div style="font-size: 0.82rem; color: #b91c1c;">
+      {{ (result.ui and result.ui.summary_high) or 'Severe interactions requiring clinical change' }}
+    </div>
   </div>
-  <div class="summary-box sbox-medium">
-    <div class="count">{{ result.severity_summary.medium }}</div>
-    <div class="label">🟠 {{ (result.ui and result.ui.summary_medium) or 'Medium Risk' }}</div>
+
+  <!-- Medium Risk Card -->
+  <div class="dash-card" style="border-left: 5px solid #f59e0b; background: #fffdf5;">
+    <div class="dash-card-header">
+      <span class="dash-card-title" style="font-size: 0.95rem; color: #92400e;">Moderate Flags</span>
+      <span class="badge badge-medium">🟠 Caution</span>
+    </div>
+    <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: #92400e; margin: 0.3rem 0;">
+      {{ result.severity_summary.medium }}
+    </div>
+    <div style="font-size: 0.82rem; color: #b45309;">
+      {{ (result.ui and result.ui.summary_medium) or 'Requires dosage adjustment / monitoring' }}
+    </div>
   </div>
-  <div class="summary-box sbox-low">
-    <div class="count">{{ result.severity_summary.low }}</div>
-    <div class="label">🟡 {{ (result.ui and result.ui.summary_low) or 'Low Risk' }}</div>
+
+  <!-- Food Warnings Card -->
+  <div class="dash-card" style="border-left: 5px solid #0d9488; background: #f4fdfb;">
+    <div class="dash-card-header">
+      <span class="dash-card-title" style="font-size: 0.95rem; color: #115e59;">Dietary Cautions</span>
+      <span class="badge badge-food">🥗 Food/Drink</span>
+    </div>
+    <div style="font-family: var(--font-heading); font-size: 2.2rem; font-weight: 800; color: #115e59; margin: 0.3rem 0;">
+      {{ result.severity_summary.food_total or (result.food_interactions|length) }}
+    </div>
+    <div style="font-size: 0.82rem; color: #0f766e;">
+      {{ (result.ui and result.ui.summary_food) or 'Food timing & nutrient interactions' }}
+    </div>
   </div>
-  <div class="summary-box sbox-food">
-    <div class="count">{{ result.severity_summary.food_total or (result.food_interactions|length) }}</div>
-    <div class="label">🥗 {{ (result.ui and result.ui.summary_food) or 'Food Warnings' }}</div>
+
+  <!-- Total Flagged Card (Vivid Violet Card) -->
+  <div class="stat-card-purple">
+    <div class="stat-header">
+      <span>Total Alerts</span>
+      <span class="stat-badge">Live Check</span>
+    </div>
+    <div class="stat-value">
+      {{ result.severity_summary.total }}
+    </div>
+    <div style="font-size: 0.8rem; opacity: 0.9;">
+      {{ (result.ui and result.ui.summary_total) or 'Total flags detected across all databases' }}
+    </div>
   </div>
-  <div class="summary-box sbox-total">
-    <div class="count">{{ result.severity_summary.total }}</div>
-    <div class="label">{{ (result.ui and result.ui.summary_total) or 'Total Flagged' }}</div>
-  </div>
+
 </div>
 {% endif %}
 
-<!-- ── Identified drugs ────────────────────────────────────────────────── -->
-<div class="card">
-  <h2>💊 {{ (result.ui and result.ui.identified_medicines) or 'Identified & Resolved Medicines' }} ({{ result.resolved_drugs|length }})</h2>
-  <p style="margin-bottom: 0.85rem; color: var(--text-secondary); font-size: 0.95rem;">
+<!-- ── 3. Identified & Resolved Medicines Card ───────────────────────── -->
+<div class="card-content-box">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; flex-wrap: wrap; gap: 0.5rem;">
+    <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0;">
+      💊 {{ (result.ui and result.ui.identified_medicines) or 'Identified & Resolved Medicines' }} ({{ result.resolved_drugs|length }})
+    </h2>
+    <span class="tool-chip" style="font-size: 0.8rem; padding: 0.25rem 0.65rem;">RxNorm Verified</span>
+  </div>
+  
+  <p style="margin-bottom: 1rem; color: var(--text-secondary); font-size: 0.9rem;">
     {{ (result.ui and result.ui.identified_desc) or 'Indian brand names have been automatically mapped to active generic ingredients:' }}
   </p>
-  <div style="display: flex; flex-wrap: wrap; gap: 0.4rem;">
+  
+  <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
     {% for drug in result.resolved_drugs %}
-      <div class="drug-chip" style="background: #ffffff; box-shadow: var(--shadow-sm); border: 1px solid #cbd5e1;">
+      <div class="drug-chip">
         {% if drug.mapped %}
           <span style="color: var(--text-secondary);">{{ drug.input }}</span>
           <span class="arrow">➔</span>
           <span class="mapped">{{ drug.generic|title }}</span>
         {% else %}
-          <span style="font-weight: 600; color: var(--text-primary);">{{ drug.generic|title }}</span>
+          <span style="font-weight: 700; color: var(--text-primary);">{{ drug.generic|title }}</span>
         {% endif %}
 
         {% if drug.resolved %}
-          <span title="RxCUI Verified: {{ drug.rxcui }}" style="color: #16a34a; font-weight: 700; margin-left: 0.4rem; font-size: 0.9rem;">✓</span>
+          <span title="RxCUI Verified: {{ drug.rxcui }}" style="color: #16a34a; font-weight: 800; margin-left: 0.4rem; font-size: 0.9rem;">✓</span>
         {% else %}
-          <span title="Could not resolve RxCUI" style="color: #dc2626; font-weight: 700; margin-left: 0.4rem; font-size: 0.9rem;">✗</span>
+          <span title="Could not resolve RxCUI" style="color: #dc2626; font-weight: 800; margin-left: 0.4rem; font-size: 0.9rem;">✗</span>
         {% endif %}
       </div>
     {% else %}
@@ -107,12 +130,14 @@
   </div>
 </div>
 
-<!-- ── Drug-Drug Interaction results ────────────────────────────────────── -->
-<div class="card">
-  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
-    <h2 style="margin-bottom: 0;">{{ (result.ui and result.ui.clinical_alerts) or '⚠️ Drug-Drug Interaction Alerts' }}</h2>
+<!-- ── 4. Drug-Drug Interaction Results ──────────────────────────────── -->
+<div class="card-content-box">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.25rem; flex-wrap: wrap; gap: 0.5rem;">
+    <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0;">
+      {{ (result.ui and result.ui.clinical_alerts) or '⚠️ Drug-Drug Interaction Alerts' }}
+    </h2>
     {% if result.interactions or result.food_interactions %}
-      <button type="button" id="btn-read-all" class="btn btn-secondary" onclick="readAllAlerts()" style="padding: 0.45rem 0.95rem; font-size: 0.88rem; display: flex; align-items: center; gap: 0.4rem; background: #f8fafc; border-color: #cbd5e1; font-weight: 700; color: var(--primary);">
+      <button type="button" id="btn-read-all" class="btn-pill-dark" onclick="readAllAlerts()" style="padding: 0.45rem 1rem; font-size: 0.85rem;">
         <span id="read-all-icon">🔊</span> <span id="read-all-text">Read All Alerts</span>
       </button>
     {% endif %}
@@ -125,8 +150,8 @@
       {% if ix.severity == 'high' %}
         <div class="alert-card alert-high">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
-            <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #7f1d1d;">
-              {{ ix.drug_a_name | title }} <span style="color: #ef4444;">⚡</span> {{ ix.drug_b_name | title }}
+            <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 800; color: #7f1d1d;">
+              💊 {{ ix.drug_a_name | title }} <span style="color: #ef4444; margin: 0 0.2rem;">⚡</span> {{ ix.drug_b_name | title }}
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <button type="button" class="btn-listen" onclick="playSingleAlert(this, '{{ ix.description|escape }}', '{{ lang or result.current_lang or 'en' }}', '{{ ix.drug_a_name|lower }}_{{ ix.drug_b_name|lower }}')">
@@ -135,7 +160,7 @@
               <span class="badge badge-high">🔴 {{ (result.ui and result.ui.summary_high) or 'High Risk' }}</span>
             </div>
           </div>
-          <p style="font-size: 1rem; color: #450a0a; line-height: 1.55; margin-bottom: 0.75rem;">
+          <p style="font-size: 0.98rem; color: #450a0a; line-height: 1.55; margin-bottom: 0.75rem;">
             {{ ix.description }}
           </p>
           <div style="font-size: 0.8rem; color: #991b1b; display: flex; gap: 1rem; flex-wrap: wrap; border-top: 1px solid rgba(239, 68, 68, 0.2); padding-top: 0.5rem;">
@@ -151,8 +176,8 @@
       {% if ix.severity == 'medium' %}
         <div class="alert-card alert-medium">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
-            <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #78350f;">
-              {{ ix.drug_a_name | title }} <span style="color: #f59e0b;">⚡</span> {{ ix.drug_b_name | title }}
+            <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 800; color: #78350f;">
+              💊 {{ ix.drug_a_name | title }} <span style="color: #f59e0b; margin: 0 0.2rem;">⚡</span> {{ ix.drug_b_name | title }}
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <button type="button" class="btn-listen" onclick="playSingleAlert(this, '{{ ix.description|escape }}', '{{ lang or result.current_lang or 'en' }}', '{{ ix.drug_a_name|lower }}_{{ ix.drug_b_name|lower }}')">
@@ -161,7 +186,7 @@
               <span class="badge badge-medium">🟠 {{ (result.ui and result.ui.summary_medium) or 'Medium Risk' }}</span>
             </div>
           </div>
-          <p style="font-size: 1rem; color: #451a03; line-height: 1.55; margin-bottom: 0.75rem;">
+          <p style="font-size: 0.98rem; color: #451a03; line-height: 1.55; margin-bottom: 0.75rem;">
             {{ ix.description }}
           </p>
           <div style="font-size: 0.8rem; color: #92400e; display: flex; gap: 1rem; flex-wrap: wrap; border-top: 1px solid rgba(245, 158, 11, 0.2); padding-top: 0.5rem;">
@@ -177,8 +202,8 @@
       {% if ix.severity == 'low' %}
         <div class="alert-card alert-low">
           <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
-            <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #713f12;">
-              {{ ix.drug_a_name | title }} <span style="color: #eab308;">⚡</span> {{ ix.drug_b_name | title }}
+            <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 800; color: #713f12;">
+              💊 {{ ix.drug_a_name | title }} <span style="color: #eab308; margin: 0 0.2rem;">⚡</span> {{ ix.drug_b_name | title }}
             </div>
             <div style="display: flex; align-items: center; gap: 0.5rem;">
               <button type="button" class="btn-listen" onclick="playSingleAlert(this, '{{ ix.description|escape }}', '{{ lang or result.current_lang or 'en' }}', '{{ ix.drug_a_name|lower }}_{{ ix.drug_b_name|lower }}')">
@@ -187,7 +212,7 @@
               <span class="badge badge-low">🟡 {{ (result.ui and result.ui.summary_low) or 'Low Risk' }}</span>
             </div>
           </div>
-          <p style="font-size: 1rem; color: #422006; line-height: 1.55; margin-bottom: 0.75rem;">
+          <p style="font-size: 0.98rem; color: #422006; line-height: 1.55; margin-bottom: 0.75rem;">
             {{ ix.description }}
           </p>
           <div style="font-size: 0.8rem; color: #854d0e; display: flex; gap: 1rem; flex-wrap: wrap; border-top: 1px solid rgba(234, 179, 8, 0.2); padding-top: 0.5rem;">
@@ -199,24 +224,29 @@
     {% endfor %}
 
   {% elif not result.errors %}
-    <!-- Clean bill of health for drug-drug -->
-    <div class="msg-success">
-      <div style="font-size: 1.15rem; font-weight: 700; margin-bottom: 0.35rem;">
+    <div style="background: var(--safe-bg); border: 1px solid var(--safe-border); border-radius: var(--radius-md); padding: 1.25rem;">
+      <div style="font-family: var(--font-heading); font-size: 1.1rem; font-weight: 700; color: var(--safe-text); margin-bottom: 0.35rem;">
         ✅ {{ (result.ui and result.ui.no_interactions) or 'No Known Direct Drug Interactions Found' }}
       </div>
-      <p style="font-size: 0.95rem; line-height: 1.5;">
+      <p style="font-size: 0.92rem; color: #15803d; line-height: 1.5;">
         {{ (result.ui and result.ui.no_interactions_desc) or 'None of the checked medicine pairs produced a known severe or moderate interaction in the clinical database.' }}
       </p>
     </div>
   {% endif %}
 </div>
 
-<!-- ── Drug-Food & Dietary Interaction results ────────────────────────── -->
+<!-- ── 5. Drug-Food & Dietary Interaction Results ────────────────────── -->
 {% if result.food_interactions %}
-<div class="card" style="border-top: 4px solid #0d9488;">
-  <h2>{{ (result.ui and result.ui.food_alerts) or '🥗 Food & Dietary Caution Alerts' }} ({{ result.food_interactions|length }})</h2>
-  <p style="margin-bottom: 1.25rem; color: var(--text-secondary); font-size: 0.95rem;">
-    Interactions between prescribed medications and specific foods, beverages, or nutrients that can alter drug absorption, metabolism, or toxicity:
+<div class="card-content-box" style="border-top: 4px solid #0d9488;">
+  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+    <h2 style="font-family: var(--font-heading); font-size: 1.25rem; font-weight: 800; color: var(--text-primary); margin-bottom: 0;">
+      {{ (result.ui and result.ui.food_alerts) or '🥗 Food & Dietary Caution Alerts' }} ({{ result.food_interactions|length }})
+    </h2>
+    <span class="badge badge-food">Dietary Matrix</span>
+  </div>
+  
+  <p style="margin-bottom: 1.25rem; color: var(--text-secondary); font-size: 0.92rem;">
+    Interactions between prescribed medications and specific foods, beverages, or nutrients:
   </p>
 
   {% for fix in result.food_interactions %}
@@ -243,8 +273,8 @@
 
     <div class="alert-card alert-food">
       <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 0.6rem; flex-wrap: wrap; gap: 0.5rem;">
-        <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 700; color: #115e59;">
-          💊 {{ fix.drug_name | title }} <span style="color: #0d9488;">⚡</span> {{ food_icon }} {{ fix.food_display }}
+        <div style="font-family: var(--font-heading); font-size: 1.15rem; font-weight: 800; color: #115e59;">
+          💊 {{ fix.drug_name | title }} <span style="color: #0d9488; margin: 0 0.2rem;">⚡</span> {{ food_icon }} {{ fix.food_display }}
         </div>
         <div style="display: flex; align-items: center; gap: 0.5rem;">
           <button type="button" class="btn-listen" onclick="playSingleAlert(this, '{{ fix.description|escape }}', '{{ lang or result.current_lang or 'en' }}', '{{ fix.drug_name|lower }}_{{ fix.food_name|lower }}')">
@@ -260,12 +290,12 @@
         </div>
       </div>
 
-      <p style="font-size: 1rem; color: #042f2e; line-height: 1.55; margin-bottom: 0.6rem;">
+      <p style="font-size: 0.98rem; color: #042f2e; line-height: 1.55; margin-bottom: 0.6rem;">
         {{ fix.description }}
       </p>
 
       {% if fix.recommendation %}
-        <div style="background: rgba(13, 148, 136, 0.08); border-left: 3px solid #0d9488; padding: 0.65rem 0.9rem; border-radius: 4px; margin-bottom: 0.6rem; font-size: 0.92rem; color: #115e59;">
+        <div style="background: rgba(13, 148, 136, 0.08); border-left: 3px solid #0d9488; padding: 0.65rem 0.9rem; border-radius: 4px; margin-bottom: 0.6rem; font-size: 0.9rem; color: #115e59;">
           <strong>💡 {{ (result.ui and result.ui.avoid_food) or 'Dietary Recommendation:' }}</strong> {{ fix.recommendation }}
         </div>
       {% endif %}
@@ -282,8 +312,8 @@
 </div>
 {% endif %}
 
-<!-- ── Medical Disclaimer ──────────────────────────────────────────────── -->
-<div class="card" style="background: #f8fafc; border: 1px solid var(--border-subtle); font-size: 0.88rem; color: var(--text-secondary);">
+<!-- ── 6. Clinical Disclaimer ────────────────────────────────────────── -->
+<div style="background: #f8fafc; border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 1rem 1.25rem; font-size: 0.85rem; color: var(--text-secondary); margin-top: 1.5rem;">
   <strong style="color: var(--text-primary);">⚕️ {{ (result.ui and result.ui.disclaimer_title) or 'Clinical Disclaimer:' }}</strong>
   {{ (result.ui and result.ui.disclaimer_text) or 'MediHelp leverages publicly available drug interaction and ontological data from the U.S. National Library of Medicine (NLM) RxNorm/RxNav. This software is for rapid decision support and educational reference only and does not replace professional medical judgment.' }}
 </div>
@@ -418,4 +448,3 @@
 </script>
 
 {% endblock %}
-
