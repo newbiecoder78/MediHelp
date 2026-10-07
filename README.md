@@ -20,7 +20,7 @@ Elderly patients in India often take multiple medications prescribed by differen
 
 ```bash
 # Clone the repository
-git clone <repository-url>
+git clone https://github.com/newbiecoder78/medihelp.git
 cd medihelp
 
 # Create and activate virtual environment
@@ -41,6 +41,17 @@ python scripts/precache_audio.py
 flask run
 ```
 
+## Environment Variables
+
+Create a `.env` file in the project root with the following:
+
+FLASK_SECRET_KEY=your-secret-key-here
+RXNAV_TIMEOUT_SECONDS=3
+OCR_FUZZY_THRESHOLD=80
+
+
+Never commit `.env` to git. A `.env.example` file with placeholder values is included in the repository.
+
 ## Docker Setup
 
 ```bash
@@ -57,8 +68,8 @@ docker run -p 5000:5000 medihelp
 |---|:---:|---|
 | `/ping` | GET | Health check and keep-alive endpoint (returns `pong` 200) |
 | `/patient` | GET | Patient prescription entry portal (text input, preset regimens, OCR image upload) |
-| `/patient/check` | POST / GET | Interaction evaluator: returns identified generic entities, drug-drug and drug-food alerts |
-| `/doctor` | GET / POST | Clinician portal: RxNorm ontology details, interaction mechanisms, and safer alternatives |
+| `/patient/check` | POST | Interaction evaluator: returns identified generic entities, drug-drug and drug-food alerts |
+| `/doctor` | GET | Clinician portal: RxNorm ontology details, interaction mechanisms, and safer alternatives |
 | `/patient/audio/<alert_key>/<lang>` | GET | Audio endpoint serving localized speech alerts in MP3 format |
 | `/audio/tts` | GET | Dynamic audio synthesis endpoint with fallback to disk cache |
 | `/ocr/upload` | POST | Prescription image processor extracting medication names with confidence scores |
@@ -82,16 +93,21 @@ All 28 tests cover brand name translation, combination drug splitting, NetworkX 
 
 ## Keep-Alive Configuration
 
-To prevent cold starts on free cloud hosting instances (such as Render), configure an automated monitoring service (such as cron-job.org or UptimeRobot) to ping:
+Render free tier sleeps after 15 minutes of inactivity. To prevent cold starts during demos or judging:
 
-```text
-https://<your-app>.onrender.com/ping
-```
+**Option A — cron-job.org (recommended)**
+1. Go to [cron-job.org](https://cron-job.org) and create a free account
+2. Create a new job with URL: `https://<your-app>.onrender.com/ping`
+3. Set schedule: every 10 minutes
+4. Enable during your judging window, disable after
 
-every 10 minutes.
+**Option B — UptimeRobot**
+1. Go to [uptimerobot.com](https://uptimerobot.com) and create a free account
+2. Add monitor: HTTP(s), URL: `https://<your-app>.onrender.com/ping`
+3. Set interval: 5 minutes
 
 ## Roadmap
 
-- **End-to-End Field Testing**: Validate against diverse real-world handwritten and printed clinic prescriptions.
-- **Demo Rehearsal**: Offline contingency validation with pre-cached audio assets.
-- **Edge Case Coverage**: Expand rare pediatric and geriatric combination drug matrices.
+- **Phase 5 — End-to-End Testing**: Validate against diverse real-world printed clinic prescriptions, test all 4 languages, test voice output, fix edge cases.
+- **Edge Case Coverage**: Empty input, unrecognized drug, single drug entry, RxNav timeout fallback.
+- **Demo Rehearsal**: Offline contingency validation with pre-cached audio assets ensuring zero internet dependency during presentation.
