@@ -16,7 +16,6 @@ Thumbs.db
 venv/
 .venv/
 env/
-app/data/common_alerts_cache/
 tests/sample_prescriptions/*.jpg
 tests/sample_prescriptions/*.png
 tests/sample_prescriptions/*.jpeg
