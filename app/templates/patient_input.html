@@ -1,0 +1,358 @@
+{% extends "base.html" %}
+{% block title %}MediHelp — Check Drug & Food Interactions{% endblock %}
+
+{% block content %}
+
+<!-- ── Language Banner / Status ──────────────────────────────────────── -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; flex-wrap: wrap; gap: 0.5rem;">
+  <span style="font-size: 0.9rem; color: var(--text-secondary); font-weight: 500;">
+    Select Input Method: <strong>Text Entry</strong> or <strong>Prescription OCR Scan</strong>
+  </span>
+  <div style="font-size: 0.85rem; color: var(--text-muted);">
+    Supported Languages: English &middot; हिन्दी &middot; தமிழ் &middot; తెలుగు
+  </div>
+</div>
+
+<!-- ── Tab Navigation for Input Method ───────────────────────────────── -->
+<div style="display: flex; gap: 0.5rem; margin-bottom: 1.25rem;">
+  <button type="button" id="tab-text-btn" class="btn btn-primary" onclick="switchTab('text')" style="padding: 0.6rem 1.2rem; font-size: 0.95rem;">
+    ✍️ Manual / Preset Text Input
+  </button>
+  <button type="button" id="tab-ocr-btn" class="btn btn-secondary" onclick="switchTab('ocr')" style="padding: 0.6rem 1.2rem; font-size: 0.95rem;">
+    📷 Scan Printed Prescription (OCR)
+  </button>
+</div>
+
+<!-- ── TAB 1: MANUAL TEXT INPUT ──────────────────────────────────────── -->
+<div id="tab-text" class="card" style="border-top: 4px solid var(--primary);">
+  <h2>💊 Enter Your Medicines</h2>
+  <p style="margin-bottom: 1.25rem; color: var(--text-secondary); font-size: 1rem;">
+    Enter your prescribed medications. Indian brand names (e.g., <strong>Crocin</strong>, <strong>Ecosprin</strong>, <strong>Combiflam</strong>) and generic names (e.g., <em>Warfarin</em>, <em>Metformin</em>, <em>Atorvastatin</em>) are automatically mapped to drug-drug and food-drug interaction databases.
+  </p>
+
+  {% if error %}
+    <div class="msg-error">
+      <strong>⚠️ Error:</strong> {{ error }}
+    </div>
+  {% endif %}
+
+  <form action="/patient/check" method="POST" id="checker-form">
+    <input type="hidden" name="lang" id="form-lang-text" value="{{ lang or 'en' }}">
+    
+    <div style="margin-bottom: 1rem;">
+      <label for="drugs" style="font-size: 1rem;">
+        Medicine Names:
+        <span style="font-size: 0.85rem; font-weight: normal; color: var(--text-muted); margin-left: 0.5rem;">
+          (Separate with commas or enter one per line)
+        </span>
+      </label>
+      <textarea
+        id="drugs"
+        name="drugs"
+        rows="5"
+        required
+        placeholder="e.g. Warfarin, Ecosprin&#10;or:&#10;Atorvastatin&#10;Metformin&#10;Ciprofloxacin"
+      ></textarea>
+    </div>
+
+    <!-- Quick Demo Preset Pills -->
+    <div style="margin-bottom: 1.5rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: var(--radius-md); padding: 0.85rem 1rem;">
+      <span style="font-size: 0.82rem; font-weight: 700; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 0.5px; display: inline-block; margin-bottom: 0.4rem;">
+        💡 Quick Demo Presets (Click to Test Phase 1 & Phase 2 Features):
+      </span>
+      <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.25rem;">
+        <button type="button" class="preset-btn" onclick="setMedicines('Warfarin, Ecosprin')">
+          🔴 Drug-Drug: Warfarin + Ecosprin
+        </button>
+        <button type="button" class="preset-btn" onclick="setMedicines('Atorvastatin, Metformin')">
+          🥗 Drug-Food: Atorvastatin (Grapefruit) + Metformin (Alcohol)
+        </button>
+        <button type="button" class="preset-btn" onclick="setMedicines('Ciprofloxacin, Dolo')">
+          🥛 Drug-Food: Ciprofloxacin (Dairy) + Dolo (Paracetamol)
+        </button>
+        <button type="button" class="preset-btn" onclick="setMedicines('Levothyroxine, Lisinopril')">
+          🥗 Dietary: Levothyroxine (Soy/Coffee) + Lisinopril (Potassium)
+        </button>
+        <button type="button" class="preset-btn" onclick="setMedicines('Combiflam, Crocin')">
+          🟠 Combo Split: Combiflam + Crocin
+        </button>
+      </div>
+    </div>
+
+    <div style="display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 1rem;">
+      <button type="submit" class="btn btn-primary" style="font-size: 1.05rem; padding: 0.85rem 2rem;">
+        🔍 Check Drug & Food Interactions
+      </button>
+      <button type="button" class="btn btn-secondary" onclick="document.getElementById('drugs').value = '';" style="font-size: 0.9rem;">
+        Clear
+      </button>
+    </div>
+  </form>
+</div>
+
+<!-- ── TAB 2: OCR PRESCRIPTION SCANNER ───────────────────────────────── -->
+<div id="tab-ocr" class="card" style="display: none; border-top: 4px solid #0d9488;">
+  <h2>📷 Scan Printed Prescription with OCR</h2>
+  <p style="margin-bottom: 1.25rem; color: var(--text-secondary); font-size: 1rem;">
+    Upload an image of a printed doctor's prescription. Tesseract OCR will extract the text, clean dosages and schedules, and match drug names with confidence scoring.
+  </p>
+
+  <!-- Upload Dropzone -->
+  <div id="ocr-dropzone" class="dropzone" onclick="document.getElementById('ocr-file-input').click();">
+    <div style="font-size: 2.5rem; margin-bottom: 0.5rem;">📄</div>
+    <div style="font-size: 1.1rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.25rem;">
+      Drop prescription image here, or <span style="color: var(--primary); text-decoration: underline;">Browse</span>
+    </div>
+    <div style="font-size: 0.85rem; color: var(--text-muted);">
+      Supports clear printed prescriptions (.JPG, .JPEG, .PNG)
+    </div>
+    <input type="file" id="ocr-file-input" accept="image/*" style="display: none;" onchange="handleImageUpload(event)">
+  </div>
+
+  <!-- OCR Scanning Spinner -->
+  <div id="ocr-loading" style="display: none; text-align: center; padding: 2rem;">
+    <div style="font-size: 1.8rem; animation: pulse 1s infinite;">🔍</div>
+    <p style="font-weight: 600; color: var(--primary); margin-top: 0.5rem;">
+      Analyzing prescription with Tesseract OCR & RapidFuzz...
+    </p>
+    <p style="font-size: 0.85rem; color: var(--text-muted);">
+      Cleaning dosage tokens and matching against Indian pharmaceutical database...
+    </p>
+  </div>
+
+  <!-- OCR Verification Step (Never auto-submits directly!) -->
+  <div id="ocr-results-panel" style="display: none; margin-top: 1.5rem;">
+    <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: var(--radius-md); padding: 1rem; margin-bottom: 1.25rem;">
+      <h3 style="font-size: 1.05rem; font-weight: 700; color: #166534; margin-bottom: 0.25rem;">
+        ✅ Extracted Medicines (Please Review & Verify Before Checking)
+      </h3>
+      <p style="font-size: 0.88rem; color: #15803d;">
+        Review the OCR extracted items below. High confidence items are verified; unmatched or incorrect lines can be edited or removed.
+      </p>
+    </div>
+
+    <!-- Verified item list container -->
+    <div id="verified-items-container" style="margin-bottom: 1rem;"></div>
+
+    <!-- Add medicine manually button -->
+    <div style="display: flex; gap: 0.5rem; margin-bottom: 1.5rem;">
+      <input type="text" id="manual-add-input" placeholder="Add missing medicine name..." style="flex: 1; padding: 0.6rem 0.85rem; font-size: 0.95rem;">
+      <button type="button" class="btn btn-secondary" onclick="addManualMedicine()" style="padding: 0.6rem 1.2rem; font-size: 0.95rem;">
+        + Add Medicine
+      </button>
+    </div>
+
+    <!-- Confirm and Check Interactions Form -->
+    <form action="/patient/check" method="POST" id="ocr-confirm-form">
+      <input type="hidden" name="lang" id="form-lang-ocr" value="{{ lang or 'en' }}">
+      <input type="hidden" name="drugs" id="ocr-final-drugs">
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
+        <button type="button" class="btn btn-primary" onclick="submitConfirmedOcrDrugs()" style="font-size: 1.05rem; padding: 0.85rem 2rem;">
+          🚀 Confirm & Check Interactions
+        </button>
+        <button type="button" class="btn btn-secondary" onclick="resetOcr()" style="font-size: 0.9rem;">
+          Scan Another Image
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ── Feature Summary ───────────────────────────────────────────────── -->
+<div class="card" style="background: #f8fafc; border-left: 4px solid var(--primary);">
+  <h2>ℹ️ MediHelp Clinical Capabilities</h2>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1.25rem; margin-top: 1rem;">
+    <div style="background: #ffffff; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+      <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.25rem;">1. Indian Brand Resolution</div>
+      <p style="font-size: 0.9rem; color: var(--text-secondary);">
+        Maps brand names (Dolo, Crocin, Combiflam) to generics & splits combos into active components.
+      </p>
+    </div>
+    <div style="background: #ffffff; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+      <div style="font-weight: 700; color: #0d9488; margin-bottom: 0.25rem;">2. Drug-Food Interactions</div>
+      <p style="font-size: 0.9rem; color: var(--text-secondary);">
+        Flags critical food cautions (Grapefruit, Dairy, Alcohol, Vitamin K, Soy, High Potassium).
+      </p>
+    </div>
+    <div style="background: #ffffff; padding: 1rem; border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+      <div style="font-weight: 700; color: var(--primary); margin-bottom: 0.25rem;">3. Multilingual Alerts</div>
+      <p style="font-size: 0.9rem; color: var(--text-secondary);">
+        Generates accessible clinical alerts in English, Hindi (हिन्दी), Tamil (தமிழ்), and Telugu (తెలుగు).
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  function switchTab(tab) {
+    var textTab = document.getElementById('tab-text');
+    var ocrTab = document.getElementById('tab-ocr');
+    var textBtn = document.getElementById('tab-text-btn');
+    var ocrBtn = document.getElementById('tab-ocr-btn');
+
+    if (tab === 'text') {
+      textTab.style.display = 'block';
+      ocrTab.style.display = 'none';
+      textBtn.className = 'btn btn-primary';
+      ocrBtn.className = 'btn btn-secondary';
+    } else {
+      textTab.style.display = 'none';
+      ocrTab.style.display = 'block';
+      ocrBtn.className = 'btn btn-primary';
+      textBtn.className = 'btn btn-secondary';
+    }
+  }
+
+  function setMedicines(val) {
+    var area = document.getElementById('drugs');
+    area.value = val;
+    area.focus();
+  }
+
+  // OCR Upload Handler
+  var currentExtractedDrugs = [];
+
+  function handleImageUpload(event) {
+    var file = event.target.files[0];
+    if (!file) return;
+
+    var formData = new FormData();
+    formData.append('image', file);
+
+    document.getElementById('ocr-dropzone').style.display = 'none';
+    document.getElementById('ocr-loading').style.display = 'block';
+    document.getElementById('ocr-results-panel').style.display = 'none';
+
+    fetch('/ocr/upload', {
+      method: 'POST',
+      body: formData
+    })
+    .then(function(res) { return res.json(); })
+    .then(function(data) {
+      document.getElementById('ocr-loading').style.display = 'none';
+      if (data.status === 'ok' && data.matched_drugs) {
+        currentExtractedDrugs = data.matched_drugs;
+        renderOcrVerificationList();
+        document.getElementById('ocr-results-panel').style.display = 'block';
+      } else {
+        alert('OCR processing error: ' + (data.message || 'No medicines detected.'));
+        resetOcr();
+      }
+    })
+    .catch(function(err) {
+      document.getElementById('ocr-loading').style.display = 'none';
+      alert('Error uploading prescription: ' + err);
+      resetOcr();
+    });
+  }
+
+  function renderOcrVerificationList() {
+    var container = document.getElementById('verified-items-container');
+    container.innerHTML = '';
+
+    if (currentExtractedDrugs.length === 0) {
+      container.innerHTML = '<div style="color: #64748b; font-style: italic; padding: 0.5rem 0;">No items extracted. Use the input below to add medicines manually.</div>';
+      return;
+    }
+
+    currentExtractedDrugs.forEach(function(item, index) {
+      var pill = document.createElement('div');
+      var confClass = item.confidence === 'high' ? 'conf-high' : (item.confidence === 'medium' ? 'conf-med' : 'conf-unmatched');
+      pill.className = 'ocr-pill ' + confClass;
+
+      var icon = item.confidence === 'high' ? '✅' : (item.confidence === 'medium' ? '⚠️' : '❌');
+      var scoreBadge = item.score ? '(' + item.score + '% match)' : '';
+
+      pill.innerHTML = `
+        <div style="display: flex; align-items: center; gap: 0.75rem; flex: 1;">
+          <span style="font-size: 1.1rem;">${icon}</span>
+          <div>
+            <strong>${escapeHtml(item.matched || item.raw)}</strong>
+            ${item.matched && item.matched.toLowerCase() !== item.raw.toLowerCase() ? '<span style="color:#64748b; font-size:0.85rem;"> (from "' + escapeHtml(item.raw) + '")</span>' : ''}
+            <span style="font-size: 0.8rem; color: #64748b; margin-left: 0.5rem;">${scoreBadge}</span>
+          </div>
+        </div>
+        <button type="button" onclick="removeOcrItem(${index})" style="background:none; border:none; color:#dc2626; font-weight:700; cursor:pointer; font-size:1.1rem; padding:0 0.5rem;" title="Remove this item">✕</button>
+      `;
+      container.appendChild(pill);
+    });
+  }
+
+  function removeOcrItem(index) {
+    currentExtractedDrugs.splice(index, 1);
+    renderOcrVerificationList();
+  }
+
+  function addManualMedicine() {
+    var input = document.getElementById('manual-add-input');
+    var val = input.value.trim();
+    if (!val) return;
+
+    currentExtractedDrugs.push({
+      raw: val,
+      matched: val,
+      generic: val.toLowerCase(),
+      score: 100,
+      confidence: 'high',
+      is_valid: true
+    });
+    input.value = '';
+    renderOcrVerificationList();
+  }
+
+  function submitConfirmedOcrDrugs() {
+    if (currentExtractedDrugs.length === 0) {
+      alert('Please add or verify at least one medicine before checking.');
+      return;
+    }
+
+    var drugNames = currentExtractedDrugs.map(function(d) {
+      return d.matched || d.raw;
+    });
+
+    document.getElementById('ocr-final-drugs').value = drugNames.join(', ');
+    document.getElementById('ocr-confirm-form').submit();
+  }
+
+  function resetOcr() {
+    document.getElementById('ocr-dropzone').style.display = 'block';
+    document.getElementById('ocr-loading').style.display = 'none';
+    document.getElementById('ocr-results-panel').style.display = 'none';
+    document.getElementById('ocr-file-input').value = '';
+    currentExtractedDrugs = [];
+  }
+
+  function escapeHtml(text) {
+    var div = document.createElement('div');
+    div.innerText = text;
+    return div.innerHTML;
+  }
+</script>
+
+<style>
+  .preset-btn {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    color: var(--text-secondary);
+    padding: 0.35rem 0.75rem;
+    border-radius: var(--radius-full);
+    font-size: 0.83rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+  }
+  .preset-btn:hover {
+    background: #e0f2fe;
+    color: var(--primary);
+    border-color: #38bdf8;
+    transform: translateY(-1px);
+  }
+  @keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.15); }
+    100% { transform: scale(1); }
+  }
+</style>
+
+{% endblock %}

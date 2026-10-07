@@ -1,0 +1,182 @@
+[
+  {
+    "drug": "warfarin",
+    "drug_rxcui": "11289",
+    "food": "grapefruit",
+    "food_display": "Grapefruit & Grapefruit Juice",
+    "severity": "high",
+    "description": "Grapefruit inhibits metabolic enzymes, significantly increasing warfarin levels and raising the risk of severe internal bleeding.",
+    "recommendation": "Avoid eating grapefruit or drinking grapefruit juice completely while on warfarin therapy.",
+    "source": "curated"
+  },
+  {
+    "drug": "warfarin",
+    "drug_rxcui": "11289",
+    "food": "vitamin k foods",
+    "food_display": "Vitamin K Rich Foods (Spinach, Kale, Broccoli)",
+    "severity": "high",
+    "description": "Vitamin K directly counteracts the anticoagulant effect of warfarin, decreasing its effectiveness and increasing clotting risk.",
+    "recommendation": "Maintain a consistent, stable intake of green leafy vegetables rather than sudden large portions.",
+    "source": "curated"
+  },
+  {
+    "drug": "warfarin",
+    "drug_rxcui": "11289",
+    "food": "alcohol",
+    "food_display": "Alcohol / Alcoholic Beverages",
+    "severity": "high",
+    "description": "Acute alcohol consumption slows warfarin breakdown and increases bleeding risk, while chronic drinking decreases its efficacy.",
+    "recommendation": "Avoid or strictly limit alcohol consumption while taking warfarin.",
+    "source": "curated"
+  },
+  {
+    "drug": "atorvastatin",
+    "drug_rxcui": "83367",
+    "food": "grapefruit",
+    "food_display": "Grapefruit & Grapefruit Juice",
+    "severity": "high",
+    "description": "Grapefruit blocks the CYP3A4 enzyme, leading to dangerously elevated atorvastatin blood levels and higher risk of severe muscle damage (rhabdomyolysis) and liver toxicity.",
+    "recommendation": "Avoid consuming large quantities of grapefruit juice (over 1.2 liters daily) or consult your doctor about switching to a statin unaffected by grapefruit.",
+    "source": "curated"
+  },
+  {
+    "drug": "rosuvastatin",
+    "drug_rxcui": "301542",
+    "food": "alcohol",
+    "food_display": "Alcohol / Alcoholic Beverages",
+    "severity": "medium",
+    "description": "Excessive alcohol consumption combined with rosuvastatin increases liver enzyme levels and potential risk of hepatic impairment.",
+    "recommendation": "Limit alcohol intake while taking cholesterol-lowering statins.",
+    "source": "curated"
+  },
+  {
+    "drug": "ciprofloxacin",
+    "drug_rxcui": "2551",
+    "food": "dairy",
+    "food_display": "Dairy Products (Milk, Curd, Yogurt, Cheese)",
+    "severity": "medium",
+    "description": "Calcium in milk, curd, and fortified products binds directly to ciprofloxacin in the digestive tract, decreasing drug absorption by up to 40%.",
+    "recommendation": "Do not take ciprofloxacin with dairy products alone. Take it at least 2 hours before or 4 hours after consuming milk or dairy.",
+    "source": "curated"
+  },
+  {
+    "drug": "tetracycline",
+    "drug_rxcui": "10395",
+    "food": "dairy",
+    "food_display": "Dairy Products & Calcium Fortified Foods",
+    "severity": "high",
+    "description": "Calcium forms insoluble chelates with tetracycline, preventing gut absorption and rendering the antibiotic largely ineffective.",
+    "recommendation": "Take tetracycline on an empty stomach with a full glass of water, at least 1-2 hours before or after dairy foods.",
+    "source": "curated"
+  },
+  {
+    "drug": "metformin",
+    "drug_rxcui": "235743",
+    "food": "alcohol",
+    "food_display": "Alcohol / Alcoholic Beverages",
+    "severity": "high",
+    "description": "Alcohol strongly potentiates the effect of metformin on lactate metabolism, significantly increasing the risk of life-threatening lactic acidosis and severe hypoglycemia.",
+    "recommendation": "Avoid excessive acute or chronic alcohol consumption while taking metformin for diabetes.",
+    "source": "curated"
+  },
+  {
+    "drug": "lisinopril",
+    "drug_rxcui": "29046",
+    "food": "potassium-rich foods",
+    "food_display": "Potassium-Rich Foods & Salt Substitutes (Bananas, Coconut Water)",
+    "severity": "medium",
+    "description": "ACE inhibitors reduce potassium excretion. High dietary potassium or potassium-based salt substitutes can cause dangerous hyperkalemia (high blood potassium).",
+    "recommendation": "Avoid potassium supplements and salt substitutes containing potassium chloride unless prescribed by your doctor.",
+    "source": "curated"
+  },
+  {
+    "drug": "telmisartan",
+    "drug_rxcui": "31676",
+    "food": "potassium-rich foods",
+    "food_display": "Potassium-Rich Foods & Salt Substitutes",
+    "severity": "medium",
+    "description": "ARBs like telmisartan increase potassium retention. Consuming high potassium foods or potassium salt substitutes may lead to irregular heart rhythms due to hyperkalemia.",
+    "recommendation": "Discuss your dietary potassium intake and salt substitutes with your physician.",
+    "source": "curated"
+  },
+  {
+    "drug": "levothyroxine",
+    "drug_rxcui": "10582",
+    "food": "soy products",
+    "food_display": "Soy Products (Soy Milk, Tofu, Soy Flour)",
+    "severity": "medium",
+    "description": "Soy compounds inhibit gastrointestinal absorption of levothyroxine, leading to uncontrolled hypothyroidism and requiring higher medicine doses.",
+    "recommendation": "Separate the ingestion of levothyroxine and soy products by at least 4 hours.",
+    "source": "curated"
+  },
+  {
+    "drug": "levothyroxine",
+    "drug_rxcui": "10582",
+    "food": "coffee",
+    "food_display": "Coffee & Espresso",
+    "severity": "low",
+    "description": "Caffeine and coffee compounds bind levothyroxine in the gut, reducing thyroid hormone absorption by 25-50%.",
+    "recommendation": "Take levothyroxine with plain water on an empty stomach at least 30-60 minutes before your morning coffee or breakfast.",
+    "source": "curated"
+  },
+  {
+    "drug": "amlodipine",
+    "drug_rxcui": "17767",
+    "food": "grapefruit",
+    "food_display": "Grapefruit & Grapefruit Juice",
+    "severity": "medium",
+    "description": "Grapefruit can increase blood concentrations of amlodipine, potentially causing excessive blood pressure drops, peripheral edema, and lightheadedness.",
+    "recommendation": "Limit or avoid grapefruit intake while taking amlodipine, and monitor for dizziness or flushing.",
+    "source": "curated"
+  },
+  {
+    "drug": "metronidazole",
+    "drug_rxcui": "6922",
+    "food": "alcohol",
+    "food_display": "Alcohol & Alcohol-Containing Items (Cough Syrups, Sauces)",
+    "severity": "high",
+    "description": "Metronidazole triggers an acute disulfiram-like reaction with alcohol: intense nausea, severe abdominal cramps, violent vomiting, facial flushing, and tachycardia.",
+    "recommendation": "Do not consume any alcohol during metronidazole treatment and for at least 48 hours after the last dose.",
+    "source": "curated"
+  },
+  {
+    "drug": "aspirin",
+    "drug_rxcui": "1191",
+    "food": "alcohol",
+    "food_display": "Alcohol / Alcoholic Drinks",
+    "severity": "medium",
+    "description": "Combining aspirin with alcohol exacerbates mucosal irritation in the stomach, dramatically increasing the risk of gastric bleeding and peptic ulcers.",
+    "recommendation": "Avoid drinking alcohol when taking aspirin regularly for pain or cardioprotection.",
+    "source": "curated"
+  },
+  {
+    "drug": "ibuprofen",
+    "drug_rxcui": "5640",
+    "food": "alcohol",
+    "food_display": "Alcohol / Alcoholic Drinks",
+    "severity": "medium",
+    "description": "Alcohol and NSAIDs both irritate the stomach lining and impair renal blood flow, multiplying the risk of stomach ulcers, GI bleeding, and kidney strain.",
+    "recommendation": "Avoid consuming alcohol while taking ibuprofen, especially on an empty stomach.",
+    "source": "curated"
+  },
+  {
+    "drug": "amoxicillin",
+    "drug_rxcui": "723",
+    "food": "alcohol",
+    "food_display": "Alcohol / Alcoholic Beverages",
+    "severity": "low",
+    "description": "While not directly contraindicated, alcohol impairs the immune response and can worsen antibiotic side effects like dizziness and stomach upset.",
+    "recommendation": "Avoid alcohol while fighting bacterial infections to support recovery and reduce GI discomfort.",
+    "source": "curated"
+  },
+  {
+    "drug": "azithromycin",
+    "drug_rxcui": "18631",
+    "food": "antacids",
+    "food_display": "Magnesium & Aluminum Antacids",
+    "severity": "medium",
+    "description": "Antacids containing aluminum or magnesium reduce the peak serum concentrations of azithromycin by roughly 24%.",
+    "recommendation": "Take azithromycin at least 1 hour before or 2 hours after antacids.",
+    "source": "curated"
+  }
+]

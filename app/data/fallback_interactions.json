@@ -1,0 +1,119 @@
+[
+  {
+    "drug_a_rxcui": "11289",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "1191",
+    "drug_b_name": "aspirin",
+    "severity": "high",
+    "description": "Concurrent use of warfarin and aspirin significantly increases the risk of bleeding. Aspirin inhibits platelet function and can displace warfarin from plasma proteins.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "202433",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "1191",
+    "drug_b_name": "aspirin",
+    "severity": "high",
+    "description": "Concurrent use of warfarin and aspirin significantly increases the risk of bleeding. Aspirin inhibits platelet function and can displace warfarin from plasma proteins.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "11289",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "5640",
+    "drug_b_name": "ibuprofen",
+    "severity": "high",
+    "description": "NSAIDs like ibuprofen can increase warfarin's anticoagulant effect and cause GI bleeding. Avoid combination; use paracetamol for pain relief instead.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "202433",
+    "drug_a_name": "warfarin",
+    "drug_b_rxcui": "5640",
+    "drug_b_name": "ibuprofen",
+    "severity": "high",
+    "description": "NSAIDs like ibuprofen can increase warfarin's anticoagulant effect and cause GI bleeding. Avoid combination; use paracetamol for pain relief instead.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "1191",
+    "drug_a_name": "aspirin",
+    "drug_b_rxcui": "5640",
+    "drug_b_name": "ibuprofen",
+    "severity": "medium",
+    "description": "Ibuprofen may interfere with aspirin's antiplatelet effect when taken together. If both are needed, take aspirin at least 30 minutes before ibuprofen.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "235743",
+    "drug_a_name": "metformin",
+    "drug_b_rxcui": "5640",
+    "drug_b_name": "ibuprofen",
+    "severity": "medium",
+    "description": "NSAIDs can reduce kidney function, which may impair metformin clearance, increasing the risk of lactic acidosis.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "41493",
+    "drug_a_name": "metformin",
+    "drug_b_rxcui": "5640",
+    "drug_b_name": "ibuprofen",
+    "severity": "medium",
+    "description": "NSAIDs can reduce kidney function, which may impair metformin clearance, increasing the risk of lactic acidosis.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "29046",
+    "drug_a_name": "lisinopril",
+    "drug_b_rxcui": "5640",
+    "drug_b_name": "ibuprofen",
+    "severity": "medium",
+    "description": "NSAIDs reduce the antihypertensive effect of ACE inhibitors and can cause acute kidney injury when combined.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "83367",
+    "drug_a_name": "atorvastatin",
+    "drug_b_rxcui": "235743",
+    "drug_b_name": "metformin",
+    "severity": "low",
+    "description": "Minor interaction: atorvastatin may slightly increase metformin levels. Monitor blood glucose levels.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "83367",
+    "drug_a_name": "atorvastatin",
+    "drug_b_rxcui": "41493",
+    "drug_b_name": "metformin",
+    "severity": "low",
+    "description": "Minor interaction: atorvastatin may slightly increase metformin levels. Monitor blood glucose levels.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "2551",
+    "drug_a_name": "ciprofloxacin",
+    "drug_b_rxcui": "1191",
+    "drug_b_name": "aspirin",
+    "severity": "low",
+    "description": "Minor pharmacokinetic interaction. No action typically required.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "235743",
+    "drug_a_name": "metformin",
+    "drug_b_rxcui": "11289",
+    "drug_b_name": "warfarin",
+    "severity": "medium",
+    "description": "Metformin may enhance the anticoagulant effect of warfarin. Monitor INR levels closely.",
+    "source": "curated"
+  },
+  {
+    "drug_a_rxcui": "41493",
+    "drug_a_name": "metformin",
+    "drug_b_rxcui": "202433",
+    "drug_b_name": "warfarin",
+    "severity": "medium",
+    "description": "Metformin may enhance the anticoagulant effect of warfarin. Monitor INR levels closely.",
+    "source": "curated"
+  }
+]

@@ -1,0 +1,69 @@
+{
+  "_comment": "Maps common Indian brand names (lowercase) to their generic drug equivalents. Used by brand_mapper.py before RxNav lookup. Add more entries as needed.",
+
+  "crocin":          "paracetamol",
+  "dolo":            "paracetamol",
+  "calpol":          "paracetamol",
+  "metacin":         "paracetamol",
+  "tylenol":         "paracetamol",
+
+  "combiflam":       "ibuprofen+paracetamol",
+  "brufen":          "ibuprofen",
+  "advil":           "ibuprofen",
+  "nurofen":         "ibuprofen",
+
+  "ecosprin":        "aspirin",
+  "disprin":         "aspirin",
+  "loprin":          "aspirin",
+
+  "glycomet":        "metformin",
+  "glucophage":      "metformin",
+  "gluconorm":       "metformin",
+  "obimet":          "metformin",
+
+  "telma":           "telmisartan",
+  "telmikind":       "telmisartan",
+  "telista":         "telmisartan",
+
+  "azithral":        "azithromycin",
+  "zithromax":       "azithromycin",
+  "azee":            "azithromycin",
+
+  "augmentin":       "amoxicillin+clavulanic acid",
+  "mox":             "amoxicillin",
+  "amoxil":          "amoxicillin",
+
+  "pan-d":           "pantoprazole+domperidone",
+  "pantop":          "pantoprazole",
+  "pantocid":        "pantoprazole",
+  "omez":            "omeprazole",
+
+  "shelcal":         "calcium carbonate+vitamin d3",
+  "gemcal":          "calcium carbonate+vitamin d3",
+
+  "atorlip":         "atorvastatin",
+  "lipitor":         "atorvastatin",
+  "storvas":         "atorvastatin",
+  "crestor":         "rosuvastatin",
+
+  "amlodac":         "amlodipine",
+  "stamlo":          "amlodipine",
+  "norvasc":         "amlodipine",
+
+  "coumadin":        "warfarin",
+  "warf":            "warfarin",
+
+  "ciprolet":        "ciprofloxacin",
+  "ciplox":          "ciprofloxacin",
+  "cifran":          "ciprofloxacin",
+
+  "metrogyl":        "metronidazole",
+  "flagyl":          "metronidazole",
+
+  "thyronorm":       "levothyroxine",
+  "eltroxin":        "levothyroxine",
+
+  "folic acid":      "folic acid",
+  "zincovit":        "multivitamin",
+  "becosules":       "vitamin b complex"
+}

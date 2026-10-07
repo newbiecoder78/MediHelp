@@ -1,0 +1,246 @@
+{
+  "meta": {
+    "languages": ["en", "hi", "ta", "te"],
+    "description": "Curated multilingual alert translations for patient accessibility"
+  },
+  "ui": {
+    "en": {
+      "page_title": "MediHelp — Drug Interaction Checker",
+      "subtitle": "Drug & Food Interaction Checker for Patient Safety",
+      "check_another": "← Check Another Prescription",
+      "summary_high": "High Risk",
+      "summary_medium": "Medium Risk",
+      "summary_low": "Low Risk",
+      "summary_food": "Food Warnings",
+      "summary_total": "Total Flagged",
+      "identified_medicines": "Identified & Resolved Medicines",
+      "identified_desc": "Indian brand names have been automatically mapped to active generic ingredients:",
+      "clinical_alerts": "⚠️ Drug-Drug Interaction Alerts",
+      "food_alerts": "🥗 Food & Dietary Caution Alerts",
+      "no_interactions": "No Known Direct Drug Interactions Found",
+      "no_interactions_desc": "None of the checked medicine pairs produced a known severe or moderate interaction in the clinical database.",
+      "disclaimer_title": "Clinical Disclaimer:",
+      "disclaimer_text": "MediHelp leverages data from the U.S. National Library of Medicine (NLM) RxNorm. This tool is for decision support and does not substitute for a doctor's advice.",
+      "food_badge": "DIETARY ALERT",
+      "avoid_food": "Dietary Recommendation:",
+      "listen": "🔊 Listen"
+    },
+    "hi": {
+      "page_title": "मेडीहेल्प — दवा परस्पर क्रिया जांच",
+      "subtitle": "रोगी सुरक्षा के लिए दवा और भोजन परस्पर क्रिया जांच",
+      "check_another": "← दूसरा पर्चा जांचें",
+      "summary_high": "उच्च जोखिम",
+      "summary_medium": "मध्यम जोखिम",
+      "summary_low": "कम जोखिम",
+      "summary_food": "भोजन चेतावनी",
+      "summary_total": "कुल चेतावनियां",
+      "identified_medicines": "पहचानी गई दवाएं",
+      "identified_desc": "भारतीय ब्रांड नामों को सक्रिय जेनेरिक घटकों में अनुवादित किया गया है:",
+      "clinical_alerts": "⚠️ दवा-दवा परस्पर क्रिया चेतावनियां",
+      "food_alerts": "🥗 भोजन और आहार संबंधी चेतावनियां",
+      "no_interactions": "कोई ज्ञात हानिकारक दवा परस्पर क्रिया नहीं मिली",
+      "no_interactions_desc": "जांची गई दवाओं में कोई गंभीर या हानिकारक परस्पर क्रिया नहीं पाई गई है।",
+      "disclaimer_title": "चिकित्सीय अस्वीकरण:",
+      "disclaimer_text": "मेडीहेल्प एनएलएम आरएक्सनॉर्म डेटा का उपयोग करता है। यह केवल सहायता के लिए है, डॉक्टर के परामर्श का विकल्प नहीं।",
+      "food_badge": "आहार चेतावनी",
+      "avoid_food": "आहार संबंधी सलाह:",
+      "listen": "🔊 सुनें"
+    },
+    "ta": {
+      "page_title": "மெடிஹெல்ப் — மருந்து எதிர்வினை சரிபார்ப்பு",
+      "subtitle": "நோயாளி பாதுகாப்பிற்கான மருந்து மற்றும் உணவு எதிர்வினை சரிபார்ப்பு",
+      "check_another": "← மற்றொரு மருந்து சீட்டை சரிபார்க்கவும்",
+      "summary_high": "அதிக ஆபத்து",
+      "summary_medium": "நடுத்தர ஆபத்து",
+      "summary_low": "குறைந்த ஆபத்து",
+      "summary_food": "உணவு எச்சரிக்கைகள்",
+      "summary_total": "மொத்த எச்சரிக்கைகள்",
+      "identified_medicines": "கண்டறியப்பட்ட மருந்துகள்",
+      "identified_desc": "இந்திய பிராண்ட் பெயர்கள் பொதுவான மூலப்பொருள் பெயர்களாக மாற்றப்பட்டுள்ளன:",
+      "clinical_alerts": "⚠️ மருந்து-மருந்து எதிர்வினை எச்சரிக்கைகள்",
+      "food_alerts": "🥗 உணவு மற்றும் உணவுமுறை எச்சரிக்கைகள்",
+      "no_interactions": "எந்தவித ஆபத்தான மருந்து எதிர்வினைகளும் கண்டறியப்படவில்லை",
+      "no_interactions_desc": "பரிசோதிக்கப்பட்ட மருந்துகளுக்கு இடையே எந்தவொரு தீவிர எதிர்வினையும் காணப்படவில்லை.",
+      "disclaimer_title": "மருத்துவ மறுப்புரை:",
+      "disclaimer_text": "மெடிஹெல்ப் NLM RxNorm தரவைப் பயன்படுத்துகிறது. இது மருத்துவரின் ஆலோசனைக்கு மாற்றாகாது.",
+      "food_badge": "உணவு எச்சரிக்கை",
+      "avoid_food": "உணவு ஆலோசனை:",
+      "listen": "🔊 கேளுங்கள்"
+    },
+    "te": {
+      "page_title": "మెడిహెల్ప్ — మందుల పరస్పర చర్య తనిఖీ",
+      "subtitle": "రోగి భద్రత కోసం మందులు మరియు ఆహార పరస్పర చర్య తనిఖీ",
+      "check_another": "← మరొక ప్రిస్క్రిప్షన్ తనిఖీ చేయండి",
+      "summary_high": "అధిక ప్రమాదం",
+      "summary_medium": "మధ్యస్థ ప్రమాదం",
+      "summary_low": "తక్కువ ప్రమాదం",
+      "summary_food": "ఆహార హెచ్చరికలు",
+      "summary_total": "మొత్తం హెచ్చరికలు",
+      "identified_medicines": "గుర్తించబడిన మందులు",
+      "identified_desc": "భారతీయ బ్రాండ్ పేర్లు వాటి సాధారణ ఔషధ పేర్లుగా మార్చబడ్డాయి:",
+      "clinical_alerts": "⚠️ మందుల మధ్య పరస్పర చర్య హెచ్చరికలు",
+      "food_alerts": "🥗 ఆహార సంబంధిత జాగ్రత్త హెచ్చరికలు",
+      "no_interactions": "ఎలాంటి ప్రమాదకరమైన మందుల పరస్పర చర్యలు కనుగొనబడలేదు",
+      "no_interactions_desc": "తనిఖీ చేసిన మందుల కలయికలో ఎటువంటి తీవ్రమైన సమస్యలు కనిపించలేదు.",
+      "disclaimer_title": "వైద్య నిరాకరణ:",
+      "disclaimer_text": "మెడిహెల్ప్ NLM RxNorm డేటాను ఉపయోగిస్తుంది. ఇది వైద్యుని సలహాకు ప్రత్యామ్నాయం కాదు.",
+      "food_badge": "ఆహార హెచ్చరిక",
+      "avoid_food": "ఆహార సలహా:",
+      "listen": "🔊 వినండి"
+    }
+  },
+  "generic_templates": {
+    "high": {
+      "en": "HIGH RISK: Combining {drug_a} with {drug_b} carries severe clinical risks. Consult your physician immediately.",
+      "hi": "उच्च जोखिम: {drug_a} को {drug_b} के साथ लेने से गंभीर स्वास्थ्य जोखिम हो सकता है। तुरंत डॉक्टर से सलाह लें।",
+      "ta": "அதிக ஆபத்து: {drug_a} மற்றும் {drug_b} ஆகியவற்றை ஒன்றாக உட்கொள்வது கடுமையான பக்கவிளைவுகளை ஏற்படுத்தலாம். உடனே மருத்துவரை அணுகவும்.",
+      "te": "అధిక ప్రమాదం: {drug_a} మరియు {drug_b} లను కలిపి తీసుకోవడం వల్ల తీవ్రమైన ప్రమాదం ఉంది. వెంటనే మీ వైద్యుడిని సంప్రదించండి."
+    },
+    "medium": {
+      "en": "MODERATE RISK: {drug_a} and {drug_b} may interact and alter medication effectiveness or increase side effects.",
+      "hi": "मध्यम जोखिम: {drug_a} और {drug_b} एक साथ लेने से दवा के असर में बदलाव या दुष्प्रभाव बढ़ सकते हैं।",
+      "ta": "நடுத்தர ஆபத்து: {drug_a} மற்றும் {drug_b} ஆகியவை மருந்தின் செயல்திறனை மாற்றலாம் அல்லது பக்கவிளைவுகளை அதிகரிக்கலாம்.",
+      "te": "మధ్యస్థ ప్రమాదం: {drug_a} మరియు {drug_b} కలిసి పనిచేయడం వల్ల మందుల పనితీరు మారవచ్చు లేదా దుష్ప్రభావాలు పెరగవచ్చు."
+    },
+    "low": {
+      "en": "LOW RISK: Minor interaction observed between {drug_a} and {drug_b}. Monitor for mild side effects.",
+      "hi": "कम जोखिम: {drug_a} और {drug_b} के बीच मामूली परस्पर क्रिया पाई गई है। सामान्य निगरानी रखें।",
+      "ta": "குறைந்த ஆபத்து: {drug_a} மற்றும் {drug_b} இடையே சிறிய எதிர்வினை மட்டுமே உள்ளது.",
+      "te": "తక్కువ ప్రమాదం: {drug_a} మరియు {drug_b} మధ్య స్వల్ప పరస్పర చర్య ఉంది."
+    },
+    "food_high": {
+      "en": "HIGH FOOD RISK: Taking {drug} with {food} can cause serious adverse reactions.",
+      "hi": "गंभीर भोजन चेतावनी: {drug} को {food} के साथ लेने से गंभीर दुष्प्रभाव हो सकते हैं।",
+      "ta": "அதிக உணவு ஆபத்து: {drug} மருந்தை {food} உடன் உட்கொள்வது ஆபத்தான பக்கவிளைவுகளை ஏற்படுத்தலாம்.",
+      "te": "తీవ్ర ఆహార హెచ్చరిక: {drug} ను {food} తో కలిపి తీసుకోవడం తీవ్ర దుష్ప్రభావాలకు దారితీస్తుంది."
+    },
+    "food_medium": {
+      "en": "FOOD CAUTION: {drug} interacts with {food}, which can reduce drug absorption or increase toxicity.",
+      "hi": "आहार सावधानी: {drug} और {food} का मेल दवा के अवशोषण को कम कर सकता है।",
+      "ta": "உணவு எச்சரிக்கை: {drug} மற்றும் {food} சேர்க்கை மருந்தின் உறிஞ்சுதலைக் குறைக்கலாம்.",
+      "te": "ఆహార జాగ్రత్త: {drug} మరియు {food} కలయిక వల్ల మందు ప్రభావం తగ్గవచ్చు."
+    },
+    "food_low": {
+      "en": "FOOD NOTE: Minor interaction between {drug} and {food}. Separate timing if advised.",
+      "hi": "आहार सुझाव: {drug} और {food} के बीच मामूली असर। उचित अंतराल रखें।",
+      "ta": "உணவு குறிப்பு: {drug} மற்றும் {food} இடையே சிறிய தொடர்பு உள்ளது.",
+      "te": "ఆహార సూచన: {drug} మరియు {food} మధ్య స్వల్ప పరస్పర చర్య ఉంది."
+    }
+  },
+  "specific_pairs": {
+    "warfarin_aspirin": {
+      "en": "Concurrent use of warfarin and aspirin significantly increases internal bleeding risk. Aspirin impairs platelet clotting while warfarin blocks clotting factors.",
+      "hi": "वारफारिन और एस्पिरिन को एक साथ लेने से आंतरिक रक्तस्राव (ब्लீडिंग) का खतरा बहुत बढ़ जाता है। दोनों दवाएं रक्त के थक्के जमने की प्रक्रिया को रोकती हैं।",
+      "ta": "வார்ஃபரின் மற்றும் ஆஸ்பிரின் மருந்துகளை ஒன்றாக உட்கொள்வது உட்புற இரத்தப்போக்கு அபாயத்தை கணிசமாக அதிகரிக்கிறது.",
+      "te": "వార్ఫరిన్ మరియు ఆస్ప్రిన్ లను కలిపి వాడటం వల్ల అంతర్గత రక్తస్రావం జరిగే ప్రమాదం గణనీయంగా పెరుగుతుంది."
+    },
+    "warfarin_ibuprofen": {
+      "en": "NSAIDs like ibuprofen amplify warfarin's blood-thinning effect and cause severe stomach bleeding. Avoid combination; use paracetamol for pain instead.",
+      "hi": "इबुप्रोफेन जैसी दर्द निवारक दवाएं वारफारिन के रक्त पतला करने वाले प्रभाव को बढ़ाती हैं और पेट से खून बहने का कारण बन सकती हैं। दर्द के लिए पैरासिटामोल का उपयोग करें।",
+      "ta": "இப்யூபுரூஃபன் வார்ஃபரின் இரத்தத்தை நீர்க்கச் செய்யும் விளைவை அதிகரித்து வயிற்றுப் பகுதியில் இரத்தப்போக்கை ஏற்படுத்தலாம். வலிக்கு பாராசிட்டமால் பயன்படுத்தவும்.",
+      "te": "ఐబుప్రోఫెన్ వార్ఫరిన్ రక్తాన్ని పలుచబరిచే ప్రభావాన్ని పెంచుతుంది మరియు కడుపులో రక్తస్రావానికి కారణమవుతుంది. నొప్పికి పారాసిటమాల్ వాడండి."
+    },
+    "aspirin_ibuprofen": {
+      "en": "Ibuprofen can block the cardioprotective antiplatelet effect of aspirin. If both are prescribed, take aspirin at least 30 minutes before ibuprofen.",
+      "hi": "इबुप्रोफेन एस्पिरिन के हृदय-सुरक्षात्मक प्रभाव को रोक सकता है। यदि दोनों आवश्यक हैं, तो इबुप्रोफेन से कम से कम 30 मिनट पहले एस्पिरिन लें।",
+      "ta": "இப்யூபுரூஃபன் ஆஸ்பிரினின் இதய பாதுகாப்பு விளைவை தடுக்கலாம். இரண்டும் தேவைப்பட்டால், ஆஸ்பிரினை முதலில் உட்கொள்ளவும்.",
+      "te": "ఐబుప్రోఫెన్ ఆస్ప్రిన్ యొక్క గుండె రక్షణ ప్రభావాన్ని తగ్గిస్తుంది. రెండూ అవసరమైతే, ఐబుప్రోఫెన్ కంటే 30 నిమిషాల ముందు ఆస్ప్రిన్ తీసుకోండి."
+    },
+    "metformin_ibuprofen": {
+      "en": "NSAIDs like ibuprofen can impair kidney function, delaying metformin clearance and increasing the risk of dangerous lactic acidosis.",
+      "hi": "इबुप्रोफेन गुर्दे (किडनी) के कार्य को प्रभावित कर सकता है, जिससे मेटफॉर्मिन का संचय होकर लैक्टिक एसिडोसिस का गंभीर खतरा बढ़ सकता है।",
+      "ta": "இப்யூபுரூஃபன் சிறுநீரக செயல்பாட்டைப் பாதிக்கலாம், இது மெட்ஃபோர்மின் வெளியேற்றத்தைத் தாமதப்படுத்தி லாக்டிக் அமிலத்தன்மை அபாயத்தை அதிகரிக்கும்.",
+      "te": "ఐబుప్రోఫెన్ మూత్రపిండాల పనితీరును ప్రభావితం చేసి మెట్ఫార్మిన్ విషపూరితంగా మారే ప్రమాదాన్ని పెంచుతుంది."
+    },
+    "lisinopril_ibuprofen": {
+      "en": "NSAIDs decrease the blood pressure lowering effect of ACE inhibitors like lisinopril and significantly increase the risk of acute kidney injury.",
+      "hi": "इबुप्रोफेन लिसिनोप्रिल जैसी बीपी की दवाओं का असर कम करता है और गुर्दे (किडनी) को नुकसान पहुंचाने का खतरा बढ़ाता है।",
+      "ta": "இப்யூபுரூஃபன் லிசினோபிரில் போன்ற இரத்த அழுத்த மருந்துகளின் பலனைக் குறைத்து, சிறுநீரக பாதிப்பை ஏற்படுத்தலாம்.",
+      "te": "ఐబుప్రోఫెన్ లిసినోప్రిల్ వంటి బీపీ మందుల ప్రభావాన్ని తగ్గించి కిడ్నీ సమస్యల ప్రమాదాన్ని పెంచుతుంది."
+    },
+    "atorvastatin_metformin": {
+      "en": "Minor pharmacokinetic interaction: atorvastatin may slightly affect glucose regulation and metformin levels. Routine monitoring advised.",
+      "hi": "मामूली परस्पर क्रिया: एटोरवास्टेटिन ब्लड शुगर के स्तर और मेटफॉर्मिन पर थोड़ा असर डाल सकता है। सामान्य शुगर जांच जारी रखें।",
+      "ta": "சிறிய எதிர்வினை: அடோர்வாஸ்டாடின் இரத்த சர்க்கரை அளவை சிறிதளவு பாதிக்கலாம். வழக்கமான பரிசோதனை போதுமானது.",
+      "te": "స్వల్ప పరస్పర చర్య: అటోర్వాస్టాటిన్ రక్తంలో చక్కెర స్థాయిలను కొద్దిగా ప్రభావితం చేయవచ్చు. సాధారణ పరీక్షలు చేయించుకోండి."
+    },
+    "metformin_warfarin": {
+      "en": "Metformin may enhance the anticoagulant effect of warfarin. Monitor INR and prothrombin time closely.",
+      "hi": "मेटफॉर्मिन वारफारिन के रक्त पतला करने वाले असर को बढ़ा सकता है। समय-समय पर INR जांच अवश्य कराएं।",
+      "ta": "மெட்ஃபோர்மின் வார்ஃபரின் இரத்த உறைதல் தடுப்பு விளைவை அதிகரிக்கலாம். INR அளவை தவறாமல் கண்காணிக்கவும்.",
+      "te": "మెట్ఫార్మిన్ వార్ఫరిన్ ప్రభావాన్ని పెంచవచ్చు. INR స్థాయిలను క్రమం తప్పకుండా పర్యవేక్షించండి."
+    },
+    "ciprofloxacin_aspirin": {
+      "en": "Minor pharmacokinetic interaction. No immediate change typically required.",
+      "hi": "मामूली परस्पर क्रिया। आमतौर पर दवा बदलने की आवश्यकता नहीं होती है।",
+      "ta": "சிறிய தொடர்பு. உடனடியாக எந்த மாற்றமும் தேவையில்லை.",
+      "te": "స్వల్ప పరస్పర చర్య. సాధారణంగా ఎటువంటి మార్పు అవసరం లేదు."
+    },
+    "warfarin_grapefruit": {
+      "en": "Grapefruit inhibits metabolic enzymes, significantly increasing warfarin levels and raising the risk of severe internal bleeding.",
+      "hi": "चकोतरा (ग्रेपफ्रूट) वारफारिन के स्तर को बहुत बढ़ा देता है, जिससे गंभीर आंतरिक रक्तस्राव का खतरा होता है।",
+      "ta": "திராட்சைப்பழம் (Grapefruit) வார்ஃபரின் அளவை அதிகரித்து கடுமையான இரத்தப்போக்கு அபாயத்தை ஏற்படுத்துகிறது.",
+      "te": "ద్రాక్షపండు (Grapefruit) వార్ఫరిన్ స్థాయిలను పెంచి తీవ్ర రక్తస్రావ ప్రమాదాన్ని కలిగిస్తుంది."
+    },
+    "warfarin_vitamin k foods": {
+      "en": "Vitamin K directly counteracts the anticoagulant effect of warfarin, decreasing its effectiveness and increasing clotting risk.",
+      "hi": "विटामिन K (हरी पत्तेदार सब्जियां जैसे पालक) वारफारिन के असर को काटता है, जिससे खून का थक्का जमने का खतरा बढ़ता है।",
+      "ta": "வைட்டமின் K (கீரை வகைகள்) வார்ஃபரின் பலனைக் குறைத்து இரத்தம் உறைதலை தூண்டலாம்.",
+      "te": "విటమిన్ K (ఆకుకూరలు) వార్ఫరిన్ ప్రభావాన్ని తగ్గించి రక్తం గడ్డకట్టే ప్రమాదాన్ని పెంచుతుంది."
+    },
+    "warfarin_alcohol": {
+      "en": "Alcohol significantly alters warfarin metabolism, substantially increasing the danger of gastrointestinal and intracranial hemorrhage.",
+      "hi": "शराब वारफारिन के असर को अनियंत्रित कर देती है, जिससे पेट और मस्तिष्क में गंभीर रक्तस्राव का भारी खतरा होता है।",
+      "ta": "மதுபானம் வார்ஃபரின் மருந்தின் சமநிலையைக் குலைத்து கடுமையான இரத்தப்போக்குக்கு வழிவகுக்கும்.",
+      "te": "మద్యపానం వార్ఫరిన్ ప్రభావాన్ని తీవ్రంగా మార్చి ప్రమాదకర రక్తస్రావానికి దారితీస్తుంది."
+    },
+    "atorvastatin_grapefruit": {
+      "en": "Grapefruit blocks CYP3A4 enzymes, causing toxic accumulation of atorvastatin in the body and risking severe muscle breakdown (rhabdomyolysis).",
+      "hi": "ग्रेपफ्रूट (चकोतरा) एटोरवास्टेटिन को शरीर में बहुत बढ़ा देता है, जिससे मांसपेशियों के गंभीर रूप से नष्ट होने और लिवर की खराबी का खतरा होता है।",
+      "ta": "திராட்சைப்பழம் (Grapefruit) அடோர்வாஸ்டாடின் அளவை ஆபத்தான அளவிற்கு உயர்த்தி தசை சிதைவை ஏற்படுத்தலாம்.",
+      "te": "ద్రాక్షపండు (Grapefruit) అటోర్వాస్టాటిన్ విషపూరిత స్థాయికి పెంచి కండరాల తీవ్ర నష్టానికి దారితీస్తుంది."
+    },
+    "ciprofloxacin_dairy": {
+      "en": "Calcium in milk, curd, and dairy binds ciprofloxacin in the gut, reducing antibiotic absorption and treatment effectiveness by 40%.",
+      "hi": "दूध और दही का कैल्शियम सिप्रोफ्लोक्सासिन से चिपक जाता है, जिससे दवा का शरीर में अवशोषण 40% तक घट जाता है और संक्रमण ठीक नहीं होता।",
+      "ta": "பால் மற்றும் தயிரில் உள்ள கால்சியம் சிப்ரோஃப்ளோக்சசின் உறிஞ்சுதலை 40% வரை குறைத்து நோய்த்தொற்று குணமாவதை தாமதப்படுத்தும்.",
+      "te": "పాలు, పెరుగులోని కాల్షియం సిప్రోఫ్లోక్సాసిన్ శోషణను 40% తగ్గిస్తుంది, దీనివల్ల ఇన్ఫెక్షన్ తగ్గదు."
+    },
+    "metformin_alcohol": {
+      "en": "Alcohol combined with metformin exponentially increases the risk of fatal lactic acidosis and severe hypoglycemia.",
+      "hi": "मेटफॉर्मिन के साथ शराब पीने से लैक्टिक एसिडोसिस (खून में एसिड की जानलेवा वृद्धि) और शुगर के अचानक बहुत गिरने का खतरा होता है।",
+      "ta": "மெட்ஃபோர்மினுடன் மது அருந்துவது உயிருக்கு ஆபத்தான லாக்டிக் அமிலத்தன்மை மற்றும் திடீர் குறைந்த சர்க்கரை அளவை ஏற்படுத்தும்.",
+      "te": "మెట్ఫార్మిన్ తీసుకుంటూ మద్యం తాగడం వల్ల ప్రాణాంతక లాక్టిక్ అసిడోసిస్ మరియు షుగర్ లెవెల్స్ పడిపోయే ప్రమాదం ఉంది."
+    },
+    "lisinopril_potassium-rich foods": {
+      "en": "Lisinopril causes potassium retention. Consuming high potassium foods or potassium salt substitutes can cause dangerous cardiac arrhythmias.",
+      "hi": "लिसिनोप्रिल शरीर में पोटेशियम को रोकता है। अधिक पोटेशियम वाले खाद्य पदार्थ या नमक विकल्प दिल की धड़कन में खतरनाक गड़बड़ी ला सकते हैं।",
+      "ta": "லிசினோபிரில் பொட்டாசியத்தை உடலில் தக்கவைக்கிறது. அதிக பொட்டாசியம் உள்ள உணவுகள் இதயத் துடிப்பில் ஆபத்தை ஏற்படுத்தலாம்.",
+      "te": "లిసినోప్రిల్ పొటాషియంను నిలిపివేస్తుంది. ఎక్కువ పొటాషియం ఉన్న ఆహారాలు గుండె సమస్యలను కలిగిస్తాయి."
+    },
+    "levothyroxine_soy products": {
+      "en": "Soy products inhibit the absorption of levothyroxine in the digestive tract, preventing proper thyroid hormone balance.",
+      "hi": "सोया उत्पाद (सोयाबीन, टोफू) थायराइड की दवा (लेवोथायरोक्सिन) को शरीर में सोखने से रोकते हैं, जिससे थायराइड अनियंत्रित हो सकता है।",
+      "ta": "சோயா பொருட்கள் லெவோதைராக்ஸின் உறிஞ்சுதலை தடுத்து தைராய்டு அளவை பாதிக்கும்.",
+      "te": "సోయా ఉత్పత్తులు లెవోథైరాక్సిన్ శోషణను అడ్డుకుంటాయి, ఫలితంగా థైరాయిడ్ సమస్య పెరుగుతుంది."
+    },
+    "amlodipine_grapefruit": {
+      "en": "Grapefruit increases amlodipine concentration in the bloodstream, which may cause dangerously low blood pressure and severe dizziness.",
+      "hi": "चकोतरा (ग्रेपफ्रूट) एम्लोडिपिन की मात्रा खून में बढ़ा देता है, जिससे बीपी बहुत ज्यादा गिर सकता है और चक्कर आ सकते हैं।",
+      "ta": "திராட்சைப்பழம் அம்லோடிபைன் மருந்தை அதிகரித்து, குறைந்த இரத்த அழுத்தம் மற்றும் தலைசுற்றலை உருவாக்கலாம்.",
+      "te": "ద్రాక్షపండు ఆమ్లోడిపైన్ స్థాయిని పెంచి, రక్తపోటు తీవ్రంగా పడిపోయేలా చేస్తుంది."
+    },
+    "metronidazole_alcohol": {
+      "en": "Metronidazole and alcohol cause severe disulfiram reactions: violent vomiting, chest pain, facial flushing, and rapid heartbeat.",
+      "hi": "मेट्रोनिडाजोल के साथ शराब पीने से तेज उल्टी, पेट में तेज दर्द, चेहरा लाल होना और दिल की धड़कन का तेज होना जैसी गंभीर प्रतिक्रिया होती है।",
+      "ta": "மெட்ரானிடசோல் மற்றும் மது ஆகியவை கடுமையான வாந்தி, நெஞ்சுவலி மற்றும் வேகமான இதயத்துடிப்பை உண்டாக்கும்.",
+      "te": "మెట్రోనిడాజోల్ తీసుకుంటూ ఆల్కహాల్ తీసుకుంటే తీవ్రమైన వాంతులు, కడుపునొప్పి, గుండె దడ వస్తాయి."
+    },
+    "tetracycline_dairy": {
+      "en": "Calcium in dairy products binds to tetracycline, completely blocking its absorption in the gut and failing the antibiotic treatment.",
+      "hi": "दूध व डेयरी उत्पादों का कैल्शियम टेट्रासाइक्लिन को निष्क्रिय कर देता है, जिससे यह एंटीबायोटिक बेअसर हो जाती है।",
+      "ta": "பாலில் உள்ள கால்சியம் டெட்ராசைக்ளின் உறிஞ்சுதலை முற்றிலுமாக தடுத்துவிடும்.",
+      "te": "పాల ఉత్పత్తులలోని కాల్షియం టెట్రాసైక్లిన్ ను శరీరం గ్రహించకుండా చేసి, యాంటీబయాటిక్ పనిచేయకుండా చేస్తుంది."
+    }
+  }
+}
